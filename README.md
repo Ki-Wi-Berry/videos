@@ -1,5 +1,27 @@
 # bilibili-videos
 
+## 运行方式
+
+终端运行，打开bilibili文件夹，输入
+
+```
+npm run dev
+```
+
+
+
+打开api_server文件夹
+
+输入
+
+```
+nodemon app.js
+```
+
+打算把网页写的相对完整后在部署到服务器上，所以请读者老爷们先将就一下QAQ
+
+
+
 ## 目前已做好的功能：
 
 ### 首页
