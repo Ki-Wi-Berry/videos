@@ -1,0 +1,45 @@
+<template>
+  <div class="bilibili_home_page">
+    <!-- 导航栏 -->
+    <head-line></head-line>
+    <!-- 分类 -->
+    <content-classification></content-classification>
+    <!-- 热点视频 -->
+    <hot-video></hot-video>
+    <!-- 推广 -->
+    <advertising></advertising>
+    <div class="block">
+    <span class="demonstration"
+      >Switch when indicator is hovered (default)</span
+    >
+    <el-carousel height="150px">
+      <el-carousel-item v-for="item in 4" :key="item">
+        <h3 class="small">{{ item }}</h3>
+      </el-carousel-item>
+    </el-carousel>
+  </div>
+  </div>
+</template>
+
+<script setup name= "MyApp">
+//导航栏
+import HeadLine from "./components/home-page/HeadLine.vue";
+// 分类
+import ContentClassification from "./components/home-page/ContentClassification.vue";
+// 热点视频
+import HotVideo from "./components/home-page/HotVideo.vue";
+// 推广
+import Advertising from "./components/home-page/Advertising.vue";
+</script>
+
+<style lang="less" scoped>
+.bilibili_home_page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-top: 0;
+  background-color: #F4F4F4;
+}
+
+</style>

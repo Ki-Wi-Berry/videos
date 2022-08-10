@@ -1,0 +1,19 @@
+<template>
+    <!-- 导航栏 -->
+    <head-line class="head_line">
+        <img src="../../image/20.jpg" alt="" class="head_line_img">
+    </head-line>
+</template>
+
+<script setup name="LoginIn">
+//导航栏
+import HeadLine from "../home-page/HeadLine.vue";
+</script>
+
+<style scoped>
+.head_line_img{
+    width: 100%;
+    height: 10rem;
+}
+</style>
+
