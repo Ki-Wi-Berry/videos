@@ -4,17 +4,17 @@
 
 ### 首页
 
-![image-20220810212856296](C:\Users\mihoutao\AppData\Roaming\Typora\typora-user-images\image-20220810212856296.png)
+![image](https://github.com/Ki-Wi-Berry/bilibili-videos/blob/master/icon/image-20220810212856296.png)
 
 
 
 ### 搜索历史
 
-![image-20220810212957952](C:\Users\mihoutao\AppData\Roaming\Typora\typora-user-images\image-20220810212957952.png)
+![image](https://github.com/Ki-Wi-Berry/bilibili-videos/blob/master/icon/image-20220810212957952.png)
 
 ### 登录页面
 
-![image-20220810213059644](C:\Users\mihoutao\AppData\Roaming\Typora\typora-user-images\image-20220810213059644.png)
+![image](https://github.com/Ki-Wi-Berry/bilibili-videos/blob/master/icon/image-20220810213059644.png)
 
 
 
