@@ -1,0 +1,114 @@
+<template>
+  <!-- <div style="height:150px; margin-top:100px">
+    <d-slider v-model="options.volume"></d-slider>
+  </div> -->
+  <div style="text-align: center">
+    <videoPlay ref="video" style="display: inline-block; width: 100%" v-bind="options" />
+
+
+    <video ref="videoRef" src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" width="320" height="240" controls="true" :poster="options.poster">
+      您的浏览器不支持 video 标签。
+    </video>
+
+  </div>
+</template>
+
+<script setup lang="ts">
+import { reactive, ref, nextTick } from "vue";
+import {
+  Ref,
+  onMounted,
+  useAttrs,
+  watch,
+} from "vue";
+import { videoPlay } from "./lib/index.js";
+import Hls2 from "hls.js";
+import videojs from 'video.js';
+import 'video.js/dist/video-js.css'
+
+const options = reactive({
+  width: "800px",
+  height: "450px",
+  color: "#409eff",
+  muted: false, //静音
+  webFullScreen: false,
+  autoPlay: false, //自动播放
+  currentTime: 0,
+  loop: false, //循环播放
+  mirror: false, //镜像画面
+  ligthOff: false, //关灯模式
+  volume: 0.3, //默认音量大小
+  control: true, //是否显示控制器
+  title: "", //视频名称
+  type: "m3u8",
+  src: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", //视频源
+  // src: "https://cdn.jsdelivr.net/gh/xdlumia/files/video-play/IronMan.mp4", //视频源
+  // src: "https://logos-channel.scaleengine.net/logos-channel/live/biblescreen-ad-free/playlist.m3u8", //视频源
+  poster: "https://cdn.jsdelivr.net/gh/xdlumia/files/video-play/ironMan.jpg", //封面
+  controlBtns: [
+    "audioTrack",
+    "quality",
+    "speedRate",
+    "volume",
+    "setting",
+    "pip",
+    "pageFullScreen",
+    "fullScreen",
+  ],
+});
+
+const init = (): void => {
+  if (state.dVideo.canPlayType(props.type) || state.dVideo.canPlayType('application/vnd.apple.mpegurl')) {
+    state.muted = props.autoPlay
+    // state.dVideo.load();
+  }
+  // // 使用hls解码
+  else if (Hls2.isSupported()) {
+    const Hls = new Hls2({ fragLoadingTimeOut: 2000 });
+    Hls.detachMedia(); //解除绑定
+    Hls.attachMedia(state.dVideo);
+    Hls.on(Hls2.Events.MEDIA_ATTACHED, () => {
+      Hls.loadSource(props.src);
+      // 加载可用质量级别
+      Hls.on('hlsManifestParsed', (ev, data) => {
+        console.log(data)
+        state.currentLevel = data.level
+        state.qualityLevels = data.levels || []
+        // state.dVideo.load();
+      });
+    })
+
+    Hls.on('hlsLevelSwitching', (ev, data) => {
+      console.log(data)
+      // state.qualityLevels = Hls.levels || []
+      console.log('LEVEL_SWITCHING')
+      // state.dVideo.load();
+    });
+    Hls.on('hlsLevelSwitched', (ev, data) => {
+      state.currentLevel = data.level
+      // state.qualityLevels = Hls.levels || []
+      console.log('LEVEL_SWITCHED')
+      // state.dVideo.load();
+    });
+  }
+}
+
+watch(() => options.src, () => {
+  //nextTick DOM更新后调用
+  nextTick(() => {
+    // 初始化
+    init()
+  })
+}, { immediate: true })
+
+</script>
+
+<style scoped>
+
+</style>
+
+
+
+
+
+
