@@ -60,13 +60,13 @@ nodemon app.js
 
 ### 视频播放页面
 
+![image](https://github.com/Ki-Wi-Berry/bilibili-videos/blob/master/icon/QQ%E5%9B%BE%E7%89%8720221209214754.png)
+
 
 
 ## TO-DO LIST：
 
-1、视屏播放页面
-
-2、搜索功能
+1、搜索功能
 
 。。。
 
