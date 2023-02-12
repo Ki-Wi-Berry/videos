@@ -23,7 +23,25 @@ import Hls2 from "hls.js";
 import { queue, NODE } from "../../utils/queue" //队列轮子
 
 
-const options = reactive({
+const options: { 
+  width: string;
+   height: string; 
+   color: string; 
+   muted: boolean; 
+   webFullScreen: boolean; 
+   autoPlay: boolean; 
+   currentTime: number; 
+   loop: boolean; 
+   mirror: boolean; 
+   ligthOff: boolean; 
+   volume: number; 
+   control: boolean;
+   title:string;
+   type:string;
+   src:string;
+   poster:string;
+   controlBtns: string[]; 
+  }= reactive({
   width: "800px",
   height: "450px",
   color: "#409eff",
@@ -54,65 +72,69 @@ const options = reactive({
   ],
 });
 
-const data = reactive({
+const data: { inputValue: string; } = reactive({
   inputValue: "",
 });
 
 
 
-let barrageArray = [
-  {
-    url: '用户头像',
-    text: '秋天爱美丽',
-    level: 10
-  },
-  {
-    url: '用户头像',
-    text: '今天很开心啊',
-    level: 10
-  },
-  {
-    url: '用户头像',
-    text: 'winter has come',
-    level: 10
-  },
-  {
-    url: '',
-    text: '土耳其现在形势',
-    level: 10
-  },
-  {
-    url: '',
-    text: '没事早点回家吃饭啊',
-    level: 10
-  },
-  {
-    url: '',
-    text: '这主角真实醉了，不会回啊',
-    level: 10
-  },
-  {
-    url: '',
-    text: '背景音乐真好听啊',
-    level: 10
-  },
-  {
-    url: '',
-    text: '背景音乐是***',
-    level: 10
-  },
-  {
-    url: '',
-    text: '经费在燃烧啊',
-    level: 10
-  },
-  {
-    url: '',
-    text: '国产良心剧',
-    level: 10
-  },
-];
-let barrageColorArray = [
+let barrageArray: {
+  url: string,
+  text: string,
+  level: number
+}[] = [
+    {
+      url: '用户头像',
+      text: '秋天爱美丽',
+      level: 10
+    },
+    {
+      url: '用户头像',
+      text: '今天很开心啊',
+      level: 10
+    },
+    {
+      url: '用户头像',
+      text: 'winter has come',
+      level: 10
+    },
+    {
+      url: '',
+      text: '土耳其现在形势',
+      level: 10
+    },
+    {
+      url: '',
+      text: '没事早点回家吃饭啊',
+      level: 10
+    },
+    {
+      url: '',
+      text: '这主角真实醉了，不会回啊',
+      level: 10
+    },
+    {
+      url: '',
+      text: '背景音乐真好听啊',
+      level: 10
+    },
+    {
+      url: '',
+      text: '背景音乐是***',
+      level: 10
+    },
+    {
+      url: '',
+      text: '经费在燃烧啊',
+      level: 10
+    },
+    {
+      url: '',
+      text: '国产良心剧',
+      level: 10
+    },
+  ];
+let barrageColorArray: string[] = [
   '#0099CC', '#333333', '#009966', '#FFFF66', '#9933FF', '#FFFF99', '#CCCCFF', '#CC9933', '#FFFF66'
 ];
 const barrageTipWidth: number = 50; //提示语的长度
@@ -129,16 +151,16 @@ onMounted(() => {
   barrageWidth = ~~window.getComputedStyle(barrageBoxWrap as Element)["width"].replace('px', '');
   barrageHeight = ~~window.getComputedStyle(barrageBoxWrap as Element)["height"].replace('px', '');
 
-  barrageArray.forEach(function (item, index) {
+  barrageArray.forEach(function (item) {
     que.push(item.text); //放进队列
-    
+
   });
-  render(false);  
+  render(false);
 })
 
 
 //保证顺序
-function render( isSendMsg:boolean) {
+function render(isSendMsg: boolean):void {
   if (que.length > 0) {
     // console.log(que.length );
     setTimeout(() => {
@@ -147,11 +169,11 @@ function render( isSendMsg:boolean) {
       createBarrage(item, isSendMsg);
       render(isSendMsg);
     }, 2000);
-  } 
+  }
 }
 
 //发送
-function sendMsg() {
+function sendMsg():boolean|undefined {
   let inputValue = data.inputValue;
   inputValue.replace(/\ +/g, "");
 
@@ -162,15 +184,15 @@ function sendMsg() {
 
   //生成弹幕
   que.push(inputValue); //放进队列
-  render(true); 
+  render(true);
   data.inputValue = '';
 }
 
 
 //创建弹幕
-function createBarrage(msg, isSendMsg) {
-  let divNode = document.createElement('div');
-  let spanNode = document.createElement('span');
+function createBarrage(msg:string, isSendMsg:boolean):void {
+  let divNode: HTMLDivElement = document.createElement('div');
+  let spanNode: HTMLSpanElement = document.createElement('span');
 
   divNode.innerHTML = msg;
   divNode.classList.add('barrage-item');
@@ -180,10 +202,10 @@ function createBarrage(msg, isSendMsg) {
   spanNode.classList.add('barrage-tip');
   divNode.appendChild(spanNode);
 
-  let barrageOffsetLeft = getRandom(barrageWidth, barrageWidth * 2);
+  let barrageOffsetLeft:number = getRandom(barrageWidth, barrageWidth * 2);
   barrageOffsetLeft = isSendMsg ? barrageWidth : barrageOffsetLeft
-  let barrageOffsetTop = getRandom(10, barrageHeight - 10);
-  let barrageColor = barrageColorArray[Math.floor(Math.random() * (barrageColorArray.length))];
+  let barrageOffsetTop:number = getRandom(10, barrageHeight - 10);
+  let barrageColor:string = barrageColorArray[Math.floor(Math.random() * (barrageColorArray.length))];
 
   //执行初始化滚动
   initBarrage.call(divNode, {
@@ -194,10 +216,10 @@ function createBarrage(msg, isSendMsg) {
 }
 
 //初始化弹幕移动(速度，延迟)
-function initBarrage(obj) {
+function initBarrage(obj :{left:number,top:number,color:string}):void {
   //初始化
   obj.top = obj.top || 0;
-  obj.class = obj.color || '#fff';
+  // obj.class = obj.color || '#fff';
   this.style.left = obj.left + 'px';
   this.style.top = obj.top + 'px';
   this.style.color = obj.color;
@@ -255,7 +277,7 @@ function move(obj) {
 }
 
 //随机获取高度
-function getRandom(start, end) {
+function getRandom(start:number, end:number):number {
   return start + (Math.random() * (end - start));
 }
 

@@ -2,12 +2,12 @@
   <router-view></router-view>
 </template>
 
-<script setup name= "MyApp">
+<script lang="ts" setup >
 import { GetUsersInfo } from "./api/LoginIn";
-import { useStore } from "../store.js";
+import { useStore } from "../store";
 import { storeToRefs } from "pinia";
 const store = useStore();
-const  {islogin}  = storeToRefs(store);
+// const  {islogin}  = storeToRefs(store);
 GetUsersInfo({}).then((res) => {
   // console.log(1);
   // console.log(res.data.message);
@@ -15,7 +15,7 @@ GetUsersInfo({}).then((res) => {
     store.loginIn();
     // localStorage.setItem("token", res.data.token);
   }else if (res.data.status == 403){
-    localStorage.removeItem("token", res.data.token);
+    localStorage.removeItem("token");
   }
 });
 </script>

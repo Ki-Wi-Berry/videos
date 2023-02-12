@@ -38,7 +38,7 @@ import { ElMessage } from "element-plus";
 import { LoginInPost } from "../../api/LoginIn";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import { useStore } from "../../../store.js";
+import { useStore } from "../../../store";
 import { storeToRefs } from "pinia";
 
 const router = useRouter();
@@ -52,7 +52,7 @@ const ruleForm = reactive({
   password: "",
 });
 
-const checkPhonenumber = (rule: any, value: string, callback: any) => {
+const checkPhonenumber = (rule: any, value: string, callback: any):void => {
   if (!value) {
     callback(new Error("请输入注册时用的邮箱或者手机号呀"));
   }
@@ -67,7 +67,7 @@ const checkPhonenumber = (rule: any, value: string, callback: any) => {
   }
 };
 
-const checkPassword = (rule: any, value: string, callback: any) => {
+const checkPassword = (rule: any, value: string, callback: any):void => {
   if (!value) {
     return callback(new Error("请输入密码呀"));
   }
@@ -86,7 +86,7 @@ const rules = reactive({
   password: [{ validator: checkPassword, trigger: "blur" }],
 });
 
-const submitForm = async (formEl: FormInstance | undefined) => {
+const submitForm = async (formEl: FormInstance | undefined):Promise<void> => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
@@ -152,4 +152,5 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
   }
 }
+
 </style>

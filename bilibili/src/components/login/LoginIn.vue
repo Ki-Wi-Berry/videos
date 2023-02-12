@@ -22,7 +22,7 @@
 //导航栏
 import HeadLine from "../home-page/HeadLine.vue";
 import LoginForm from "./LoginForm.vue";
-import { useStore } from "../../../store.js";
+import { useStore } from "../../../store.ts";
 import { storeToRefs } from "pinia";
 const store = useStore();
 
@@ -47,7 +47,7 @@ store.top_navigation_bar_height="14rem";
       height: calc(11.5rem * 86 / 106);
       display: flex;
       justify-content: center;
-      background-color: #00a0d8;
+      background-color: #00A0D8;
       .head_line_img {
         width: 80%;
         height: 11.5rem;
@@ -57,12 +57,12 @@ store.top_navigation_bar_height="14rem";
 
   .login_in_title {
     width: 80%;
-    height: 0.1rem;
+    height: .1rem;
     margin-top: 6rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom: 0.1rem solid #40484b48;
+    border-bottom: .1rem solid #40484B48;
     margin-bottom: 7rem;
     span {
       margin-top: 2rem;
@@ -71,9 +71,10 @@ store.top_navigation_bar_height="14rem";
       width: 10rem;
       display: flex;
       justify-content: center;
-      background-color: #fff;
+      background-color: #FFFFFF;
     }
   }
 }
+
 </style>
 

@@ -48,7 +48,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts"  setup>
 import { useStore } from "../../../store";
 import { storeToRefs } from "pinia";
 import { ElIcon } from "element-plus";

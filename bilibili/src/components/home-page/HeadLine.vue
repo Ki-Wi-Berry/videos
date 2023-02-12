@@ -91,6 +91,7 @@
               store.islogin
                 ? {
                     'background-image': 'url(./src/assets/image/22.jpg)',
+                    'z-index':'99999'
                   }
                 : {
                     'background-color':
@@ -132,7 +133,7 @@
               <div
                 class="top_navigation_bar_login_status"
                 v-for="item in data.top_navigation_bar_login_status"
-                :key="item"
+                :key="item.text"
               >
                 <span class="top_navigation_bar_login_nums">{{
                   item.nums
@@ -186,7 +187,7 @@
   </nav>
 </template>
 
-<script name= "HeadLine" setup>
+<script lang="ts"  setup>
 import { reactive } from "vue";
 import {
   Search,
@@ -196,10 +197,11 @@ import {
   MoonNight,
 } from "@element-plus/icons-vue";
 import { ElButton } from "element-plus";
-import { useStore } from "../../../store.js";
+import { useStore } from "../../../store";
 import { storeToRefs } from "pinia";
 import { defineProps } from "vue";
 const store = useStore();
+// const {count} = storeToRefs(Store)
 
 const props = defineProps({
   // 导航栏阴影
@@ -255,28 +257,28 @@ const data = reactive({
   login_box_animation: 2,
 });
 // 添加历史记录
-const add = function () {
+const add = function ():void {
   data.home_top_navigation_list.push(data.inputValue);
 };
 // 删除历史记录
-const remove = function (index) {
+const remove = function (index: number):void  {
   // console.log("删除");
   // console.log(index);
   data.home_top_navigation_list.splice(index, 1);
 };
 // 清空历史记录
-const clear = function () {
+const clear = function ():void  {
   data.home_top_navigation_list = [];
 };
 // 显示历史记录
-const show_browsing_history1 = function () {
+const show_browsing_history1 = function ():void  {
   data.browsing_history_show_or_not1 = 1;
 };
 // 隐藏历史记录
-const hide_browsing_history1 = function () {
+const hide_browsing_history1 = function ():void  {
   document.addEventListener("click", (e) => {
-    var box = document.getElementById("search_record_box_id");
-    if (!box.contains(e.target)) {
+    var box = document.getElementById("search_record_box_id") as HTMLElement;
+    if (!box.contains(e.target as Node | null)) {
       // console.log("在外");
       data.browsing_history_show_or_not1 = 0;
     }
@@ -286,32 +288,32 @@ const hide_browsing_history1 = function () {
 let show_drop_time, hide_drop_time, hide_drop_time_plus;
 
 // 显示登录下拉菜单
-const show_login_box_animation = async function () {
+const show_login_box_animation = async function ():Promise<void>  {
   if (store.islogin) {
     clearTimeout(hide_drop_time);
     clearTimeout(hide_drop_time_plus);
     show_drop_time = await setTimeout(() => {
-      data.login_box_animation = true;
-      data.login_box_drop = true;
+      data.login_box_animation = 1;
+      data.login_box_drop = 1;
     }, 200);
   }
 };
 
 // 隐藏登录下拉菜单
-const hide_login_box_drop = async function () {
+const hide_login_box_drop = async function ():Promise<void> {
   if (store.islogin) {
     clearTimeout(show_drop_time);
     hide_drop_time = await setTimeout(() => {
-      data.login_box_animation = false;
+      data.login_box_animation = 0;
     }, 200);
     hide_drop_time_plus = await setTimeout(() => {
-      data.login_box_drop = false;
+      data.login_box_drop = 0;
     }, 800);
   }
 };
 
 // 退出登录
-const login_out = function () {
+const login_out = function ():void {
   console.log("退出登录");
   store.loginOut();
 };
@@ -641,6 +643,7 @@ const login_out = function () {
     }
   }
 }
+
 
 </style>
 

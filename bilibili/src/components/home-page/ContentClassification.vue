@@ -106,7 +106,7 @@
   </div>
 </template>
 
-<script setup name="ContentClassification">
+<script lang="ts" setup>
 import { reactive } from "vue";
 import { ElDropdown,ElDropdownMenu, ElDropdownItem } from "element-plus";
 import { ArrowDown } from "@element-plus/icons-vue";

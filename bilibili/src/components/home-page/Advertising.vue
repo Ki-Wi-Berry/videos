@@ -25,7 +25,7 @@
         <div
           class="home_page_advertising_video"
           v-for="(item, index) in data.home_page_advertising_video"
-          :key="item"
+          :key="item.id"
         >
           <a href="#" class="home_page_advertising_video_a_top">
             <div
@@ -48,25 +48,29 @@
   </div>
 </template>
 
-<script setup name= "Advertising">
+<script lang="ts" setup>
 const data = {
   //推广
   home_page_advertising_video: [
     {
       up: "来霍格沃茨学习魔法",
       down: "哈利波特魔法觉醒",
+      id:1,
     },
     {
       up: "【一看你就饿】辣油浇肉呲溜一嗦，每根粉都好吃到飙泪！",
       down: "哔哩哔哩纪录片",
+      id:2,
     },
     {
       up: "每天建模一小时，【接单】赚外块！",
       down: "建模大师",
+      id:3,
     },
     {
       up: "《我退休的妈妈用她离谱的声线唱古风歌》",
       down: "拯救世界的狗子",
+      id:4,
     },
   ],
 };
@@ -190,6 +194,9 @@ const data = {
     }
   }
 }
+
+
+
 
 
 

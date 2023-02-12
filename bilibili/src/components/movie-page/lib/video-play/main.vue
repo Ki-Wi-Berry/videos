@@ -228,7 +228,7 @@ const state = reactive({
 
 });
 const compose =
-  (...args) =>
+  (...args):void =>
     (value) =>
       args.reverse().reduce((acc, fn) => fn(acc), value);
 // 收集video事件
@@ -425,7 +425,7 @@ const setFrontEndPreload = async () => {
     setTimeout(() => {
       // console.log(i);
       let canvas = document.createElement("canvas");
-      const context = canvas.getContext('2d');
+      const context = canvas.getContext('2d') ;
       state.Vvideo.currentTime = i;
       new Promise(function (rsv) {
         const event = function () {

@@ -1,7 +1,0 @@
-// const config={
-
-// }
-
-export default {
-    
-}

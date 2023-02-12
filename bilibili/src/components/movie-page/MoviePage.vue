@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts"  setup>
 import HeadLine from "../home-page/HeadLine.vue";
 import TitleUp from "./TitleUp.vue";
 import VideoPlayer from "./VideoPlay.vue";

@@ -8,7 +8,7 @@ import {GetInfo} from "../router_hander/user_ctrl.js"
 router.post('/user_register',regUser);
 
 // 登录
-router.post('/user_login', loginUser);
+router.get('/user_login', loginUser);
 
 // 获取用户信息
 router.get('/get_info', GetInfo);

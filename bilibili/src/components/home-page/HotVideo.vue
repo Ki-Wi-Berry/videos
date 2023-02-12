@@ -20,7 +20,7 @@
       <div
         class="hot_video_right_area"
         v-for="(item, index) in data.hot_video_img"
-        :key="item"
+        :key="item.id"
       >
         <div class="hot_video_right_box">
           <a
@@ -45,7 +45,7 @@
   </div>
 </template>
 
-<script setup name="HotVideo" >
+<script lang="ts"  setup>
 const data = {
   //热点视频
   hot_video_img: [
@@ -53,31 +53,37 @@ const data = {
       title: "金Bili辉煌的一天",
       up: "up: ****",
       number: 123+"播放",
+      id:1,
     },
     {
       title: "FPX VS LNG",
       up: "up: ****",
       number: 123+"播放",
+      id:2,
     },
     {
       title: "转世重生前没喝孟婆汤吧！",
       up: "up: ****",
       number: 123+"播放",
+      id:3,
     },
     {
       title: "林浩 | 李成阳 |这还是极挑抢金条那两？",
       up: "up: ****",
       number: 123,
+      id:4,
     },
     {
       title: "《封神之战》",
       up: "up: ****",
       number: 123,
+      id:5,
     },
     {
       title: "峡 谷 分 析 师",
       up: "up: ****",
       number: 123,
+      id:6,
     },
   ],
 };
