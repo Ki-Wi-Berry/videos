@@ -202,7 +202,7 @@ function createBarrage(msg:string, isSendMsg:boolean):void {
   spanNode.classList.add('barrage-tip');
   divNode.appendChild(spanNode);
 
-  let barrageOffsetLeft:number = barrageWidth;
+  let barrageOffsetLeft:number = getRandom(barrageWidth, barrageWidth * 2);
   barrageOffsetLeft = isSendMsg ? barrageWidth : barrageOffsetLeft
   let barrageOffsetTop:number = getRandom(10, barrageHeight - 10);
   let barrageColor:string = barrageColorArray[Math.floor(Math.random() * (barrageColorArray.length))];
