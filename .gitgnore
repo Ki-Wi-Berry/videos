@@ -1,6 +1,6 @@
-node_modules/
+**/node_modules/
 
-.history/
+**/.history/
 
 
-.vscode/
+**/.vscode/
