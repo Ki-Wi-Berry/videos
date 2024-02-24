@@ -21,7 +21,7 @@ nodemon app.js
 
 ## 技术栈
 
- - **前端：JavaScript,Vue**
+ - **前端：JavaScript,Vue3**
 	 - axios (发送请求的第三方库)
     - element-plus (基于 Vue 3 的组件库，简化UI代码)
     - pinia（类似vuex的状态管理插件）
