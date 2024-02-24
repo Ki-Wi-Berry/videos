@@ -1,9 +1,9 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 
-import Home from './components/home-page/Home.vue'
-import Login from './components/login/LoginIn.vue'
-import News from './components/news/News.vue'
-import Movie from './components/movie-page/MoviePage.vue'
+import Home from './pages/home-page/Home.vue'
+import Login from './pages/login/LoginIn.vue'
+import News from './pages/news/News.vue'
+import Movie from './pages/movie-page/MoviePage.vue'
 
 const router = createRouter({
     history: createWebHashHistory(),
