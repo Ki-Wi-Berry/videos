@@ -8,6 +8,8 @@ const pool=mysql.createPool({
     database:'my_db_01'
 })
 
+console.log('连接成功')
+
 export default pool.promise();
 
 // const user={id:"5",password:"123",username:"wuxi"};
