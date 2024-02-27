@@ -1,8 +1,7 @@
 import express from "express";
-const router=new express.Router();
-import {regUser} from "../router_hander/user_ctrl.js"
-import {loginUser} from "../router_hander/user_ctrl.js"
-import {GetInfo} from "../router_hander/user_ctrl.js"
+const router=new (express.Router() as any);
+import {regUser,loginUser,GetInfo} from "../router_handle/user_ctrl.js"
+
 
 //注册新用户
 router.post('/user_register',regUser);

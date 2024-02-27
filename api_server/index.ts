@@ -2,8 +2,6 @@ import express from "express";
 import cors from "cors";
 import useRouter from "./router/user_router.js";
 import bodyparser from "body-parser"
-import config from "./config.js"
-import expressJWT from "express-jwt";
 
 const app=express();
 app.use(cors());  
@@ -15,13 +13,13 @@ app.use(bodyparser.json());
 
 app.use("/api",useRouter);  
 
-app.use((err,req,res,next)=>{
+// app.use((err,req,res,next)=>{
     // if(err.name=='UnauthorizedError') return res.send({
     //     status:403,
     //     message:"身份认证失败"
     // })
-    next();
-})
+//     next();
+// })
 
 app.listen(3007,()=>{
     console.log("http://127.0.0.1:3007")

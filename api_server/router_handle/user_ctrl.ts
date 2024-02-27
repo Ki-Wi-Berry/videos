@@ -2,20 +2,23 @@ import db from "../db/user_db.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import config from "../config.js"
+import {checkIfExists} from '../hooks/index.js'
 
 export async function regUser(req, res) {
     try {
         const data = req.body;
-        const selectSql = "select * from users where phoneNumber=?";
-        let [result] = await db.query(selectSql, data.phoneNumber)
-            .catch(err => { console.log(err) });
+        // const selectSql = "select * from users where phoneNumber=?";
+        // let [result] = await db.query(selectSql, data.phoneNumber)
+        //     .catch(err => { console.log(err) });
         //号码已占用
-        if (result.length > 0) {
+        checkIfExists('users','users',data.phoneNumber).then(()=>{
             throw new Error(res.send({
                 status: 403,
                 message: "电话号码已注册过了嗷",
             }))
-        }
+        }).catch(err =>{
+            console.log(err)
+        })
 
         //对密码进行加密
         data.password = bcrypt.hashSync(data.password, 10);
@@ -23,7 +26,7 @@ export async function regUser(req, res) {
         const insertSql = "insert into users set ?";
 
         const insertStr = { phoneNumber: data.phoneNumber, password: data.password };
-        [result] = await db.query(insertSql, insertStr)
+        const [result] = await db.query(insertSql, insertStr)
             .catch(err => { console.log(err) });
         if (result.affectedRows != 1) {
             res.send({
@@ -35,13 +38,13 @@ export async function regUser(req, res) {
             status: 0,
             message: "请求成功",
         })
-    } catch (err) {
-        res.send({
-            status: 403,
-            message: "请求失败",
-            desc: err.message
-        })
-
+    } catch (err:any) {
+        // res.send({
+        //     status: 403,
+        //     message: "请求失败",
+        //     desc: err.message
+        // })
+        console.log(err)
     }
 
 

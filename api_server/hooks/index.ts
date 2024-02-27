@@ -1,0 +1,1 @@
+export {checkIfExists} from './hook'
