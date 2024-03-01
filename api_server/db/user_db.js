@@ -16,6 +16,7 @@ export default pool.promise();
 
 // const sqlStr="insert into users set ?"
 
+
 // db.query(sqlStr,user,(error,result)=>{
 //     if(error) return console.log(error.message);
 //     // console.log(result);
