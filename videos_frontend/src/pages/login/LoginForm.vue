@@ -1,106 +1,103 @@
 <template>
-  <el-form
-    ref="ruleFormRef"
-    :model="ruleForm"
-    :rules="rules"
-    label-width="35rem"
-  >
-    <el-form-item prop="phone_number" class="phone_number">
-      <el-input
-        type="text"
-        placeholder="你的手机号/邮箱"
-        v-model="ruleForm.phone_number"
-      />
-    </el-form-item>
+  <div class="form-box">
+    <el-form
+      ref="ruleFormRef"
+      :model="ruleForm"
+      :rules="rules"
+      label-width="35rem"
+    >
+      <el-form-item prop="phone_number" class="phone_number">
+        <el-input
+          type="text"
+          placeholder="你的手机号"
+          v-model="ruleForm.phone_number"
+        />
+      </el-form-item>
 
-    <el-form-item prop="password" class="password">
-      <el-input
-        type="password"
-        placeholder="密码"
-        v-model="ruleForm.password"
-        autocomplete="off"
-      />
-    </el-form-item>
+      <el-form-item prop="password" class="password">
+        <el-input
+          type="password"
+          placeholder="密码"
+          v-model="ruleForm.password"
+          autocomplete="off"
+        />
+      </el-form-item>
 
-    <el-form-item class="login_in_button">
-      <el-button type="primary" @click="submitForm(ruleFormRef)"
-        >登录</el-button
-      >
-      <el-button>注册</el-button>
-    </el-form-item>
-  </el-form>
+      <el-form-item class="login_in_button">
+        <el-button type="primary" @click="submitForm(ruleFormRef)"
+          >登录</el-button
+        >
+        <el-button @click="goToRegister">去注册</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
-import type { FormInstance } from "element-plus";
 import { ElMessage } from "element-plus";
-import { LoginInPost } from "../../api/LoginIn";
+import { LoginInPost } from "../../api/request";
 import { useRouter } from "vue-router";
-import axios from "axios";
 import { useStore } from "../../../store";
-import { storeToRefs } from "pinia";
 
 const router = useRouter();
 const store = useStore();
-// const { islogin } = storeToRefs(store);
 
 const formSize = ref("default");
-const ruleFormRef = ref<FormInstance>();
+const ruleFormRef = ref();
 const ruleForm = reactive({
   phone_number: "",
   password: "",
 });
 
-const checkPhonenumber = (rule: any, value: string, callback: any):void => {
+const checkPhoneNumber = (rule: any, value: string, callback: any): void => {
   if (!value) {
-    callback(new Error("请输入注册时用的邮箱或者手机号呀"));
+    callback(new Error("请输入注册时用的邮箱或者手机号"));
   }
   let re = /^[0-9]*$/;
   // console.log(value.length);
   // ||value.length != 11
   if (!re.test(value)) {
     // console.log(re.test(value));
-    callback(new Error("输入格式有误哟"));
+    callback(new Error("输入格式有误"));
   } else {
     callback();
   }
 };
 
-const checkPassword = (rule: any, value: string, callback: any):void => {
+const checkPassword = (rule: any, value: string, callback: any): void => {
   if (!value) {
-    return callback(new Error("请输入密码呀"));
+    return callback(new Error("请输入密码"));
   }
   let re = /^[0-9a-zA-Z]*$/;
 
   if (!re.test(value)) {
     // console.log(re.test(value));
-    return callback(new Error("输入格式有误哟"));
+    return callback(new Error("输入格式有误"));
   } else {
     return callback();
   }
 };
 
 const rules = reactive({
-  phone_number: [{ validator: checkPhonenumber, trigger: "blur" }],
+  phone_number: [{ validator: checkPhoneNumber, trigger: "blur" }],
   password: [{ validator: checkPassword, trigger: "blur" }],
 });
 
-const submitForm = async (formEl: FormInstance | undefined):Promise<void> => {
+const submitForm = async (formEl: any): Promise<void> => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
-      let url = "http://localhost:3007/api/user_register";
       let dataObject = reactive({
         phoneNumber: ruleForm.phone_number,
         password: ruleForm.password,
       });
       try {
-        LoginInPost(dataObject).then(function (res) {
+        LoginInPost(dataObject)?.then(function (res) {
           // console.log(res.data.token);
           if (res.data.status == 0) {
             store.loginIn();
-            localStorage.setItem("token",res.data.token);
+            localStorage.setItem("token", res.data.token);
             router.go(-1);
           } else if (res.data.status == 403) {
             ElMessage({ message: res.data.message, offset: 200 });
@@ -114,10 +111,17 @@ const submitForm = async (formEl: FormInstance | undefined):Promise<void> => {
     }
   });
 };
+
+const goToRegister = () => {
+  router.push("/register");
+};
 </script>
 
-
 <style lang="less" scoped>
+.form-box{
+  width: 30%;
+}
+
 .phone_number {
   ::v-deep .el-form-item__content {
     margin-left: 0 !important;
@@ -152,5 +156,4 @@ const submitForm = async (formEl: FormInstance | undefined):Promise<void> => {
     }
   }
 }
-
 </style>

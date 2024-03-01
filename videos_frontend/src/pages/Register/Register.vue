@@ -2,22 +2,20 @@
   <!-- 导航栏 -->
   <div class="login_in_page">
     <div class="login_in_title">
-      <span>登录</span>
+      <span>注册</span>
     </div>
-    <login-form></login-form>
+    <RegisterForm></RegisterForm>
   </div>
   <!-- <demo></demo> -->
 </template>
 
-<script setup name="LoginIn">
+<script setup name="Register">
 //导航栏
-import HeadLine from "../home-page/HeadLine.vue";
-import LoginForm from "./LoginForm.vue";
+import RegisterForm from "./RegisterForm.vue";
 import { useStore } from "../../../store.ts";
-import { storeToRefs } from "pinia";
 const store = useStore();
 
-
+store.top_navigation_bar_height="14rem";
 </script>
 
 <style lang="less" scoped >
@@ -26,6 +24,7 @@ const store = useStore();
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-wrap: wrap;
   width: 100%;
   // height: 100rem;
   .login_in_headline {

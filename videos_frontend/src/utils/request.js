@@ -8,6 +8,8 @@ import instance from "./index"
  * @returns {Promise}     返回一个promise对象，其实就相当于axios请求数据的返回值
  */
 
+const localhost = 'http://localhost:3007'
+
 export const axios = ({
     method,
     url,
@@ -15,22 +17,22 @@ export const axios = ({
     config
 }) => {
     method = method.toLowerCase();
+    const queryUrl = `${localhost}${url}`
     if (method == 'post') {
-        return instance.post(url, data, {...config})
+        return instance.post(queryUrl, data, {...config})
     } else if (method == 'get') {
-        return instance.get(url, {
+        return instance.get(queryUrl, {
             params: data,
             ...config
         })
     } else if (method == 'delete') {
-        return instance.delete(url, {
+        return instance.delete(queryUrl, {
             params: data,
             ...config
         }, )
     } else if (method == 'put') {
-        return instance.put(url, data,{...config})
+        return instance.put(queryUrl, data,{...config})
     } else {
         console.error('未知的method' + method)
-        return false
     }
 }

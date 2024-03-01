@@ -1,16 +1,18 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 
 import Home from './pages/home-page/Home.vue'
-import Login from './pages/login/LoginIn.vue'
+import Login from './pages/login'
 import News from './pages/news/News.vue'
 import Movie from './pages/movie-page/MoviePage.vue'
+import Register from './pages/Register'
 
 const router = createRouter({
     history: createWebHashHistory(),
     routes: [
-        { path: '/', redirect: '/movie' },
+        { path: '/', redirect: '/login' },
         { path: '/home', component: Home },
         { path: '/login', component: Login },
+        { path: '/register', component: Register },
         { path: '/news', component: News },
         { path: '/movie', component: Movie },
     ]
@@ -22,9 +24,10 @@ router.beforeEach((to, from, next) => {
     if (to.path == '/news' && !tokenStr) {
         next("/login");
     } else if (to.path == '/login' && tokenStr) {
-        next(false);
+        // next(false);
+        next();
     }else if (to.path == from.path) {
-        next(false);
+        next();
     }else {
         next();
     }

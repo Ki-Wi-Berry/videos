@@ -9,6 +9,7 @@
     "@element-plus/icons-vue": "^1.0.0",
     "@vitejs/plugin-vue": "^2.2.4",
     "axios": "^0.26.1",
+    "crypto-js": "^4.2.0",
     "element-plus": "^2.0.4",
     "hls.js": "^1.0.10",
     "pinia": "^2.0.12",
