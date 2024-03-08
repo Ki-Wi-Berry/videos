@@ -1,5 +1,5 @@
 <template>
-  <div class="bilibili_movie_page">
+  <div class="videos_movie_page">
     <head-line :top_navigation_bar_login_background_color="'#ffffff'"
       top_navigation_bar_search_background_color="#ffffff !important"
       top_navigation_bar_shadow="0 2px 4px #00000014 !important"></head-line>
@@ -7,19 +7,17 @@
       <title-up></title-up>
       <video-player></video-player>
     </div>
-
-
   </div>
 </template>
 
 <script lang="ts"  setup>
-import HeadLine from "../home-page/HeadLine.vue";
+import {HeadLine} from "../../components";
 import TitleUp from "./TitleUp.vue";
 import VideoPlayer from "./VideoPlay.vue";
 </script>
 
 <style lang="less" scoped>
-.bilibili_movie_page {
+.videos_movie_page {
   width: 100%;
   display: flex;
   justify-content: center;

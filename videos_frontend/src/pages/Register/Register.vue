@@ -12,7 +12,7 @@
 <script setup name="Register">
 //导航栏
 import RegisterForm from "./RegisterForm.vue";
-import { useStore } from "../../../store.ts";
+import { useStore } from "../../store";
 const store = useStore();
 
 store.top_navigation_bar_height="14rem";

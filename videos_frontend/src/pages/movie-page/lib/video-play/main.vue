@@ -1,10 +1,3 @@
-/*
- *@修改者:KiwiBerry
- *@删除了d-player-top组件
- *@删除了d-status组件
- *@修复了点击播放按钮无效的bug
- *@增加了鼠标悬浮在进度条上时的预览功能
-*/
 <template>
 
   <div ref="refPlayerWrap" id="refPlayerWrap" class="d-player-wrap" @mousemove="mouseMovewWarp" :class="{
@@ -13,7 +6,7 @@
     'd-player-wrap-hover':
       state.playBtnState == 'play' || state.isVideoHovering,
   }">
-    <!-- 如果是移动端并且支持倍速 controls=true 否则为flase -->
+    <!-- 如果是移动端并且支持倍速 controls=true 否则为 false -->
     <div class="d-player-video" id="dPlayerVideo">
       <video ref="refdVideo" class="d-player-video-main" id="dPlayerVideoMain"
         :controls="isMobile && state.speed ? true : false" :class="{ 'video-mirror': state.mirror }"

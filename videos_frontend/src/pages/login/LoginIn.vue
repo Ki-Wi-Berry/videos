@@ -11,9 +11,8 @@
 
 <script setup name="LoginIn">
 //导航栏
-import HeadLine from "../home-page/HeadLine.vue";
 import LoginForm from "./LoginForm.vue";
-import { useStore } from "../../../store.ts";
+import { useStore } from "../../store";
 import { storeToRefs } from "pinia";
 const store = useStore();
 

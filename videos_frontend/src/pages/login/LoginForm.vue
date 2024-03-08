@@ -38,7 +38,7 @@ import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { LoginInPost } from "../../api/request";
 import { useRouter } from "vue-router";
-import { useStore } from "../../../store";
+import { useStore } from "../../store";
 
 const router = useRouter();
 const store = useStore();

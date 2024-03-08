@@ -4,7 +4,7 @@
 
 <script lang="ts" setup >
 import { GetUsersInfo } from "./api/request";
-import { useStore } from "../store";
+import { useStore } from "./store";
 import { storeToRefs } from "pinia";
 const store = useStore();
 // const  {islogin}  = storeToRefs(store);

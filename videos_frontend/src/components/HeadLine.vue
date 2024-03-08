@@ -197,9 +197,9 @@ import {
   MoonNight,
 } from "@element-plus/icons-vue";
 import { ElButton } from "element-plus";
-import { useStore } from "../../../store";
 import { storeToRefs } from "pinia";
 import { defineProps } from "vue";
+import { useStore } from "../store";
 const store = useStore();
 // const {count} = storeToRefs(Store)
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="bilibili_home_page">
+  <div class="videos_home_page">
     <!-- 导航栏 -->
     <head-line
       class="HeadLine"
@@ -17,14 +17,14 @@
 
 <script lang="ts"  setup>
 //导航栏
-import HeadLine from "./HeadLine.vue";
+import {HeadLine} from "../../components";
 // 分类
-import ContentClassification from "./ContentClassification.vue";
+import {ContentClassification} from "./components";
 // 热点视频
-import HotVideo from "./HotVideo.vue";
+import {HotVideo} from "./components";
 // 推广
-import Advertising from "./Advertising.vue";
-import { useStore } from "../../../store";
+import {Advertising} from "./components";
+import { useStore } from "../../store";
 import { storeToRefs } from "pinia";
 const store = useStore();
 
@@ -34,7 +34,7 @@ store.top_navigation_bar_height="14rem";
 </script>
 
 <style lang="less" scoped>
-.bilibili_home_page {
+.videos_home_page {
   width: 100%;
   display: flex;
   justify-content: center;

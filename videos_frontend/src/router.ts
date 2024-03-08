@@ -9,7 +9,7 @@ import Register from './pages/Register'
 const router = createRouter({
     history: createWebHashHistory(),
     routes: [
-        { path: '/', redirect: '/login' },
+        { path: '/', redirect: '/movie' },
         { path: '/home', component: Home },
         { path: '/login', component: Login },
         { path: '/register', component: Register },

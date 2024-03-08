@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts"  setup>
-import { useStore } from "../../../store";
+import { useStore } from "../../store";
 import { storeToRefs } from "pinia";
 import { ElIcon } from "element-plus";
 import { VideoPlay, Postcard, Clock, Message } from "@element-plus/icons-vue";

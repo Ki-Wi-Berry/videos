@@ -55,7 +55,7 @@ import { ref } from "vue";
 import { ElMessage } from "element-plus";
 import { RegUser } from "../../api/request";
 import { useRouter } from "vue-router";
-import { useStore } from "../../../store";
+import { useStore } from "../../store";
 import CryptoJS from 'crypto-js'
 
 interface RuleForm {
