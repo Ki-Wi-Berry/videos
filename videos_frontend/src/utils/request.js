@@ -8,7 +8,7 @@ import instance from "./index"
  * @returns {Promise}     返回一个promise对象，其实就相当于axios请求数据的返回值
  */
 
-const localhost = 'http://localhost:3007'
+const localhost = ''
 
 export const axios = ({
     method,

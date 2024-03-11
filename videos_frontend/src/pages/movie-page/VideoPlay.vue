@@ -1,6 +1,6 @@
 <template>
   <div class="video_play" style="text-align: center">
-    <videoPlay ref="video" style="display: inline-block; width: 100%" v-bind="options" />
+    <videoPlay :key="options.src" ref="video" style="display: inline-block; width: 100%" v-bind="options" />
     <div class="barrage-container">
     </div>
   </div>
@@ -11,14 +11,14 @@
       <div class="send_btn">
         <span class="send_btn_span" @click="sendMsg">发送</span>
       </div>
-
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, nextTick, onMounted } from "vue";
-import { videoPlay } from "./lib/index.js";
+import { videoPlay } from "./VideoPlayer/index.ts";
+import {GetMovie} from '../../api/request.js'
 import Hls2 from "hls.js";
 import { queue, NODE } from "../../utils/queue" //队列轮子
 
@@ -57,10 +57,8 @@ const options: {
   title: "", //视频名称
   type: "m3u8",
   // src:'/src/assets/videos/x36xhzz.m3u8',
-  src:'/src/assets/videos/01.mp4',
+  src:'http://localhost:3007/api/demo2',
   // src: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", //视频源
-
-  // src: "https://cdn.jsdelivr.net/gh/xdlumia/files/video-play/IronMan.mp4", //视频源
   // src: "https://logos-channel.scaleengine.net/logos-channel/live/biblescreen-ad-free/playlist.m3u8", //视频源
   poster: "https://cdn.jsdelivr.net/gh/xdlumia/files/video-play/ironMan.jpg", //封面
   controlBtns: [
@@ -146,7 +144,7 @@ let barrageBoxWrap: Element, barrageBox: Element, barrageWidth: number, barrageH
 let que = new queue();
 let renderTimer: NodeJS.Timeout | null;
 
-onMounted(() => {
+onMounted(async () => {
   barrageBoxWrap = document.querySelector('.video_play') as Element;
   barrageBox = document.querySelector('.barrage-container') as Element;
   // console.log(barrageBox);
@@ -158,6 +156,9 @@ onMounted(() => {
     que.push(item.text); //放进队列
   });
   render(false);
+
+  const movieSrc = await GetMovie()
+  options.src = movieSrc[0]
 })
 
 
@@ -424,4 +425,4 @@ function getRandom(start:number, end:number):number {
 
 
 
-
+./VideoPlayer/index.js

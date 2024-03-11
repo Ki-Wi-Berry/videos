@@ -167,10 +167,10 @@ import {
 } from "vue";
 import { debounce } from "throttle-debounce";
 import Hls2 from "hls.js";
-import DIcon from "../components/d-icon.vue";
-import DSwitch from "../components/d-switch.vue"; //switch
-import DLoading from "../components/d-loading.vue"; //loading
-import DSlider from "../components/d-slider.vue"; // slider
+import DIcon from "../components/Icon.vue";
+import DSwitch from "../components/Switch.vue"; //switch
+import DLoading from "../components/Loading.vue"; //loading
+import DSlider from "../components/Slider.vue"; // slider
 import {
   hexToRgba,
   timeFormat,
@@ -412,7 +412,7 @@ const onProgressMove = (ev, val) => {
 };
 
 const setFrontEndPreload = async () => {
-  state.Vvideo.removeEventListener('canplay', setFrontEndPreload);
+  state.Vvideo?.removeEventListener('canplay', setFrontEndPreload);
   // console.log(1);
   for (let i = 0; i <= state.Vvideo.duration; i += 3) {
     setTimeout(() => {
@@ -426,10 +426,10 @@ const setFrontEndPreload = async () => {
           canvas.toBlob(function (blob) {
             state.Thumbnails.push(URL.createObjectURL(blob as Blob));
           }, "image/jpeg");
-          state.Vvideo.removeEventListener('canplay', event);
+          state.Vvideo?.removeEventListener('canplay', event);
           rsv(null);
         };
-        state.Vvideo.addEventListener('canplay', event);
+        state.Vvideo?.addEventListener('canplay', event);
 
       });
     }, i*100);
@@ -445,7 +445,7 @@ const setFrontEndPreload = async () => {
 // 预处理预览图
 const preloadVideoThumbs = () => {
 
-  state.Vvideo.addEventListener('canplay', setFrontEndPreload)
+  state.Vvideo?.addEventListener('canplay', setFrontEndPreload)
 }
 
 // debounce(1000,true,preloadVideoThumbs);
@@ -511,7 +511,7 @@ const init = (): void => {
     Hls.attachMedia(state.dVideo);
     Hls3.attachMedia(state.Vvideo);
     Hls.on(Hls2.Events.MEDIA_ATTACHED, () => {
-      Hls.loadSource(props.src);
+      Hls.loadSource('http://localhost:3001/mergedUploadFile/ea4b9032c51563d78fe7fcd435cbcdf1/chunk/index.m3u8');
       // 加载可用质量级别
       Hls.on('hlsManifestParsed', (ev, data) => {
         // console.log(data)
@@ -522,8 +522,7 @@ const init = (): void => {
     })
 
     Hls3.on(Hls2.Events.MEDIA_ATTACHED, () => {
-      Hls3.loadSource(props.src);
-      // 加载可用质量级别
+      Hls3.loadSource('http://localhost:3001/mergedUploadFile/ea4b9032c51563d78fe7fcd435cbcdf1/chunk/index.m3u8');
     })
 
     Hls.on('hlsLevelSwitching', (ev, data) => {

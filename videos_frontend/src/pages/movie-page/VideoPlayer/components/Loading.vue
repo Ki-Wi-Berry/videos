@@ -1,6 +1,6 @@
 
 <template>
-    <div class="d-loading" :style="loadingStyle" v-show="LOAD_TYPE.includes(loadType)">
+    <div class="loading" :style="loadingStyle" v-show="LOAD_TYPE.includes(loadType)">
         <div>
             <!-- 初始化加载 -->
             <span v-if="props.loadType == 'loadstart'">
@@ -14,13 +14,13 @@
             </span>
             <!-- 播放结束 -->
             <span v-show="props.loadType == 'ended'">
-                <p @click="replayHandle" class="d-flex-x d-pointer">
+                <p @click="replayHandle" class="flex-x pointer">
                     <i class="iconfont icon-replay f24 mr5"></i>重新播放
                 </p>
             </span>
             <!-- 播放错误 -->
             <span v-show="props.loadType === 'error' || props.loadType === 'stalled'">
-                <p @click="replayHandle" class="d-flex-x d-pointer">
+                <p @click="replayHandle" class="flex-x pointer">
                     <i class="iconfont icon-replay f24 mr5"></i>请求错误
                 </p>
             </span>
@@ -30,7 +30,7 @@
 
 <script setup lang='ts'>
 import { getCurrentInstance, reactive, computed, } from 'vue'
-import DIcon from './d-icon.vue'
+import DIcon from './Icon.vue'
 const { proxy } = getCurrentInstance()
 const LOAD_TYPE = ['loadstart', 'waiting', 'ended', 'error', 'stalled']
 const props = defineProps({
@@ -65,7 +65,7 @@ const loadingStyle = computed(() => {
 .f24 {
     font-size: 24px;
 }
-.d-loading {
+.loading {
     position: absolute;
     left: 0;
     right: 0;
@@ -80,7 +80,7 @@ const loadingStyle = computed(() => {
     text-align: center;
     font-size: 13px;
 }
-// .d-play-btn {
+// .play-btn {
 //     width: 90px;
 //     height: 90px;
 //     color: #fff;

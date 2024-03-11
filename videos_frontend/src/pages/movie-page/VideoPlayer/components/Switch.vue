@@ -1,8 +1,8 @@
 
 <template>
-    <div class="d-switch" :class="{ 'is-checked': checked }">
+    <div class="switch" :class="{ 'is-checked': checked }">
         <input
-            class="d-switch__input"
+            class="switch__input"
             ref="input"
             type="checkbox"
             :checked="checked"
@@ -10,7 +10,7 @@
             :true-value="trueValue"
             :false-value="falseValue"
         />
-        <span class="d-switch_action"></span>
+        <span class="switch_action"></span>
     </div>
 </template>
 
@@ -58,7 +58,7 @@ const handleInput = (): void => {
 };
 </script>
 <style lang='less' scoped>
-.d-switch {
+.switch {
   position: relative;
   height: 18px;
   transition: background .2s;
@@ -68,7 +68,7 @@ const handleInput = (): void => {
   display: inline-flex;
   align-items: center;
   vertical-align: middle;
-  .d-switch__input {
+  .switch__input {
     position: relative;
     z-index: 1;
     margin: 0;
@@ -76,7 +76,7 @@ const handleInput = (): void => {
     height: 100%;
     opacity: 0;
   }
-  .d-switch_action {
+  .switch_action {
     position: absolute;
     transition: .2s;
     left: 2px;
@@ -89,7 +89,7 @@ const handleInput = (): void => {
   }
   &.is-checked {
     background: v-bind(activeColor);
-    .d-switch_action {
+    .switch_action {
       left: 100%;
       background: #FFFFFF;
       margin-left: -18px;

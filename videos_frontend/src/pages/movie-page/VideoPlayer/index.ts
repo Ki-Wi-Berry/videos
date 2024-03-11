@@ -1,4 +1,4 @@
-import videoPlay from './video-play/main.vue';
+import videoPlay from './Player/main.vue';
 
 function install(app) {
   app.component(videoPlay.name, videoPlay)

@@ -1,14 +1,11 @@
 
 <template>
-  <!-- <svg class="d-icon" :style="iconSize" aria-hidden="true">
-    <use :xlink:href="`#${icon}`" />
-  </svg>-->
-  <i class="d-icon iconfont" :class="icon" :style="iconSize"></i>
+  <i class="icon iconfont" :class="icon" :style="iconSize"></i>
 </template>
 <script>
 
 export default {
-  name: "d-icon"
+  name: "icon"
 }
 </script>
 <script setup>
@@ -26,7 +23,7 @@ const iconSize = computed(() => {
 </script>
 <style lang = "less" scoped >
 @import '../style/iconfont.css';
-.d-icon {
+.icon {
   display: inline-block;
   cursor: pointer;
   overflow: hidden;

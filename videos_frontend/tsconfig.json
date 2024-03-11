@@ -1,8 +1,12 @@
 {
   "include": [
     "src/**/*.ts",
+    "src/**/*.js",
     "src/**/*.tsx",
     "src/**/*.vue",
     "src/shims-vue.d.ts"
-  ]
+  ],
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+  },
 }
