@@ -157,8 +157,8 @@ onMounted(async () => {
   });
   render(false);
 
-  const movieSrc = await GetMovie()
-  options.src = movieSrc[0]
+  // const movieSrc = await GetMovie()
+  // options.src = movieSrc[0]
 })
 
 

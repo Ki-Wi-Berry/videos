@@ -1,6 +1,5 @@
 <template>
   <nav class="top_navigation" 
-  :style="{ 'height': store.top_navigation_bar_height }"
   >
     <ul
       class="top_navigation_bar"
@@ -12,7 +11,7 @@
         :key="item"
       >
         <router-link
-          :to="data.top_navigation_bar_herf_left[index]"
+          :to="data.top_navigation_bar_href_left[index]"
           :style="'color:' + top_navigation_bar_li_color + ';'"
           >{{ item }}</router-link
         >
@@ -81,7 +80,6 @@
       >
         <div class="top_navigation_bar_login_box">
           <router-link
-            to="/login"
             :class="{
               top_navigation_bar_login: true,
               show_login_box_drop: data.login_box_animation == 1,
@@ -178,8 +176,8 @@
         >
       </li>
       <li class="top_navigation_bar_li">
-        <router-link to="/" class="contribute">
-          <router-link to="/"> 投稿 </router-link>
+        <router-link to="/upload" class="contribute">
+          <router-link to="/upload"> 投稿 </router-link>
         </router-link>
       </li>
     </ul>
@@ -236,7 +234,7 @@ const data = reactive({
     "历史",
     "创作中心",
   ],
-  top_navigation_bar_herf_left: ["/home", "/", "/", "/", "/", "/", "/", "/"],
+  top_navigation_bar_href_left: ["/home", "/", "/", "/", "/", "/", "/", "/"],
   top_navigation_bar_herf_right: ["/", "/news", "/news", "/news", "/news", "/"],
   browsing_history_show_or_not1: 0,
   top_navigation_bar_login_status: [
@@ -326,7 +324,7 @@ const login_out = function ():void {
   max-width: 200rem;
   top: 0;
   width: 100%;
-  height: 14rem;
+  // height: 14rem;
   .top_navigation_bar {
     padding-left: 2rem;
     height: 5rem;

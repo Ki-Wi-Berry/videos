@@ -1,53 +1,52 @@
 <template>
   <div class="form-box">
     <el-form
-    ref="ruleFormRef"
-    :model="ruleForm"
-    :rules="rules"
-    label-width="35rem"
-  >
-    <el-form-item prop="phoneNumber" class="form-select">
-      <el-input
-        type="text"
-        placeholder="请输入手机号"
-        v-model="ruleForm.phoneNumber"
-      />
-    </el-form-item>
+      ref="ruleFormRef"
+      :model="ruleForm"
+      :rules="rules"
+      label-width="35rem"
+    >
+      <el-form-item prop="phoneNumber" class="form-select">
+        <el-input
+          type="text"
+          placeholder="请输入手机号"
+          v-model="ruleForm.phoneNumber"
+        />
+      </el-form-item>
 
-    <el-form-item prop="userName" class="form-select">
-      <el-input
-        type="text"
-        placeholder="请输入用户名"
-        v-model="ruleForm.userName"
-        autocomplete="off"
-      />
-    </el-form-item>
+      <el-form-item prop="userName" class="form-select">
+        <el-input
+          type="text"
+          placeholder="请输入用户名"
+          v-model="ruleForm.userName"
+          autocomplete="off"
+        />
+      </el-form-item>
 
-    <el-form-item prop="password" class="form-select">
-      <el-input
-        type="password"
-        placeholder="请输入密码"
-        v-model="ruleForm.password"
-        autocomplete="off"
-      />
-    </el-form-item>
+      <el-form-item prop="password" class="form-select">
+        <el-input
+          type="password"
+          placeholder="请输入密码"
+          v-model="ruleForm.password"
+          autocomplete="off"
+        />
+      </el-form-item>
 
-    <el-form-item prop="confirmPassword" class="form-select">
-      <el-input
-        type="password"
-        placeholder="再次输入密码"
-        v-model="ruleForm.confirmPassword"
-        autocomplete="off"
-      />
-    </el-form-item>
+      <el-form-item prop="confirmPassword" class="form-select">
+        <el-input
+          type="password"
+          placeholder="再次输入密码"
+          v-model="ruleForm.confirmPassword"
+          autocomplete="off"
+        />
+      </el-form-item>
 
-    <el-form-item class="form-button">
-      <el-button type="primary" @click="goToLogin">去登录</el-button>
-      <el-button @click="submitForm(ruleFormRef)">注册</el-button>
-    </el-form-item>
-  </el-form>
+      <el-form-item class="form-button">
+        <el-button type="primary" @click="goToLogin">去登录</el-button>
+        <el-button @click="submitForm(ruleFormRef)">注册</el-button>
+      </el-form-item>
+    </el-form>
   </div>
-  
 </template>
 
 <script lang="ts" setup>
@@ -56,7 +55,7 @@ import { ElMessage } from "element-plus";
 import { RegUser } from "../../api/request";
 import { useRouter } from "vue-router";
 import { useStore } from "../../store";
-import CryptoJS from 'crypto-js'
+import CryptoJS from "crypto-js";
 
 interface RuleForm {
   phoneNumber: string;
@@ -136,10 +135,10 @@ const submitForm = async (formEl: any): Promise<void> => {
   await formEl.validate((valid, fields) => {
     if (valid) {
       const { phoneNumber, password, userName } = ruleForm.value;
-      const  hashPassword=CryptoJS.SHA256(password).toString()
+      const hashPassword = CryptoJS.SHA256(password).toString();
       let dataObject = {
         phoneNumber,
-        password:hashPassword,
+        password: hashPassword,
         userName,
       };
       RegUser(dataObject)?.then(function (res) {
@@ -170,7 +169,7 @@ const goToLogin = () => {
 </script>
 
 <style lang="less" scoped>
-.form-box{
+.form-box {
   width: 30%;
 }
 .form-select {

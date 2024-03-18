@@ -48,7 +48,7 @@ instance.interceptors.request.use((config) => {
     }
     //若请求方式为post，则将data参数转为JSON字符串
     if (config.method === 'post') {
-        config.data = JSON.stringify(config.data);
+        // config.data = JSON.stringify(config.data);
     }
     return config;
 }, (error) =>

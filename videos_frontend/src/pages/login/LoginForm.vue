@@ -6,11 +6,11 @@
       :rules="rules"
       label-width="35rem"
     >
-      <el-form-item prop="phone_number" class="phone_number">
+      <el-form-item prop="phoneNumber" class="phoneNumber">
         <el-input
           type="text"
           placeholder="你的手机号"
-          v-model="ruleForm.phone_number"
+          v-model="ruleForm.phoneNumber"
         />
       </el-form-item>
 
@@ -36,6 +36,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
+import CryptoJS from "crypto-js";
 import { LoginInPost } from "../../api/request";
 import { useRouter } from "vue-router";
 import { useStore } from "../../store";
@@ -45,8 +46,8 @@ const store = useStore();
 
 const formSize = ref("default");
 const ruleFormRef = ref();
-const ruleForm = reactive({
-  phone_number: "",
+const ruleForm = ref({
+  phoneNumber: "",
   password: "",
 });
 
@@ -80,7 +81,7 @@ const checkPassword = (rule: any, value: string, callback: any): void => {
 };
 
 const rules = reactive({
-  phone_number: [{ validator: checkPhoneNumber, trigger: "blur" }],
+  phoneNumber: [{ validator: checkPhoneNumber, trigger: "blur" }],
   password: [{ validator: checkPassword, trigger: "blur" }],
 });
 
@@ -88,10 +89,12 @@ const submitForm = async (formEl: any): Promise<void> => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
-      let dataObject = reactive({
-        phoneNumber: ruleForm.phone_number,
-        password: ruleForm.password,
-      });
+      const { phoneNumber, password } = ruleForm.value;
+      const hashPassword = CryptoJS.SHA256(password).toString();
+      let dataObject = {
+        phoneNumber,
+        password: hashPassword,
+      };
       try {
         LoginInPost(dataObject)?.then(function (res) {
           // console.log(res.data.token);
@@ -122,7 +125,7 @@ const goToRegister = () => {
   width: 30%;
 }
 
-.phone_number {
+.phoneNumber {
   ::v-deep .el-form-item__content {
     margin-left: 0 !important;
     width: 35rem;

@@ -415,12 +415,12 @@ const setFrontEndPreload = async () => {
   state.Vvideo?.removeEventListener('canplay', setFrontEndPreload);
   // console.log(1);
   for (let i = 0; i <= state.Vvideo.duration; i += 3) {
-    setTimeout(() => {
+    // setTimeout(() => {
       // console.log(i);
       let canvas = document.createElement("canvas");
       const context = canvas.getContext('2d') ;
       state.Vvideo.currentTime = i;
-      new Promise(function (rsv) {
+      await new Promise(function (rsv) {
         const event = function () {
           context?.drawImage(state.Vvideo, 0, 0, 300, 150);
           canvas.toBlob(function (blob) {
@@ -432,7 +432,7 @@ const setFrontEndPreload = async () => {
         state.Vvideo?.addEventListener('canplay', event);
 
       });
-    }, i*100);
+    // }, i*100);
 
   }
   let video: HTMLElement = document.getElementById('Vvideo') as HTMLElement;
