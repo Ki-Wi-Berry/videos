@@ -22,7 +22,9 @@ export async function initUpload(req, res) {
   const uploadId = await fileUploader.initFilePartUpload(name);
   return res.send({
     status: 200,
-    uploadId,
+    data:{
+      uploadId,
+    }
   });
   //   res.status(200);
   //   res.json({ uploadId });
@@ -86,7 +88,7 @@ export async function sliceVideoFromFFmpeg(inputPath) {
     // 执行切片命令
     exec(command, (err, stdout, stderr) => {
       if (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -115,7 +117,9 @@ export async function finishUpload(req, res) {
   //   console.log("suffix", suffix);
   return res.send({
     status: 200,
-    path: m3u8Path,
+    data: {
+      path: m3u8Path,
+    },
   });
   //   res.status(200);
   //   res.json({ path: m3u8Path });
@@ -123,16 +127,23 @@ export async function finishUpload(req, res) {
 
 export async function confirmUpload(req, res) {
   const userInfo = GetUserInfoFromToken(req);
-  const userId = userInfo.id;
+  if (!userInfo) {
+    return res.send({
+      status: 403,
+      message: "登陆状态过期",
+    });
+  }
+  const userId = userInfo.userId;
+  const author = userInfo.userName;
   //   console.log(userId)
   const { movieUrl, imgUrl, movieName } = req.body;
   //   console.log(movieUrl,imgUrl,movieName,id)
   const insertSql = "insert into movies set ?";
 
-  const insertStr = { movieUrl, imgUrl, movieName, userId };
+  const insertStr = { movieUrl, imgUrl, movieName, userId, author,viewNumber:0,likesNumber:0 };
 
   const [insertStrResult] = await db.query(insertSql, insertStr);
-  console.log(insertStrResult.affectedRows);
+  // console.log(insertStrResult.affectedRows);
   if (insertStrResult.affectedRows !== 1) {
     res.send({
       status: 403,

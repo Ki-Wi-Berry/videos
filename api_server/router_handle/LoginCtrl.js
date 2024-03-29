@@ -2,42 +2,13 @@ import db from "../db/user_db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import config from "../config.js";
-import {
-  checkIfExists,
-  GetUserInfoFromToken,
-} from "../utils/hook.js";
+import { checkIfExists, GetUserInfoFromToken } from "../utils/hook.js";
 
 // 注册
 export async function regUser(req, res) {
   try {
     const data = req.body;
     const { phoneNumber, userName, password } = data;
-    // const selectSql = "select * from users where phoneNumber=?";
-    // let [result] = await db.query(selectSql, data.phoneNumber)
-    //     .catch(err => { console.log(err) });
-    // //号码已占用
-    // if (result.length > 0) {
-    //     throw new Error(res.send({
-    //         status: 403,
-    //         message: "电话号码已注册过了嗷",
-    //     }))
-    // }
-
-    // 删除users表
-    // const dropTableQuery = "DROP TABLE IF EXISTS users";
-    // const [result] = await db.query(dropTableQuery)
-    // console.log(result);
-
-    // const createUserTable =
-    //   "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY)";
-
-    // const [createTableResult] = await db.query(createUserTable);
-    // console.log(createTableResult.warningStatus)
-
-    // await addColumnIfNotExists("users", "userName", "VARCHAR(255)");
-    // await addColumnIfNotExists("users", "password", "VARCHAR(255)");
-    // await addColumnIfNotExists("users", "phoneNumber", "VARCHAR(255)");
-
     const ifExist = await checkIfExists("users", "phoneNumber", phoneNumber);
 
     if (ifExist) {
@@ -68,7 +39,9 @@ export async function regUser(req, res) {
     res.send({
       status: 0,
       message: "注册成功",
-      token: tokenStr,
+      data: {
+        token: tokenStr,
+      },
     });
   } catch (err) {
     console.log("regUser", err);
@@ -111,7 +84,9 @@ export async function loginUser(req, res) {
     return res.send({
       status: 0,
       message: "登录成功",
-      token: tokenStr,
+      data: {
+        token: tokenStr,
+      },
     });
   } catch (err) {
     return res.send({
@@ -137,31 +112,4 @@ export async function GetUserInfo(req, res) {
       message: "验证成功",
     });
   }
-  // const token = req.headers.authorization;
-  // if (!token) {
-  //   return res.send({
-  //     status: 403,
-  //     message: "无token",
-  //   });
-  // }
-  // try {
-  //   const userInfo = jwt.verify(token, config.jwtSecretKey);
-  //   console.log(userInfo);
-  //   if (userInfo) {
-  //     return res.send({
-  //       status: 0,
-  //       message: "验证成功",
-  //     });
-  //   } else {
-  //     return res.send({
-  //       status: 403,
-  //       message: "token错误",
-  //     });
-  //   }
-  // } catch (err) {
-  //   return res.send({
-  //     status: 403,
-  //     message: "token已过期",
-  //   });
-  // }
 }

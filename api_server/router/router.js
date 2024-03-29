@@ -9,6 +9,7 @@ import {
   finishUpload,
   confirmUpload
 } from "../router_handle/UploadCtrl.js";
+import { getUserInfoDetail,changeUserInfoDetail,getUserMovies,getHeaderUserInfo } from "../router_handle/userInfoCtrl.js";
 
 const router = new express.Router();
 const upload = multer();
@@ -78,5 +79,17 @@ router.post("/finishUpload", finishUpload);
 
 // 确认上传
 router.post("/confirmUpload", confirmUpload);
+
+// 获取用户详细信息
+router.get("/getUserInfoDetail", getUserInfoDetail);
+
+// 修改用户详细信息
+router.post("/changeUserInfoDetail", changeUserInfoDetail);
+
+// 获取我的视频
+router.get("/getUserMovies", getUserMovies);
+
+// 获取顶栏用户信息
+router.get("/getHeaderUserInfo", getHeaderUserInfo);
 
 export default router;

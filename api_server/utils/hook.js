@@ -42,11 +42,16 @@ export async function addColumnIfNotExists(tableName, columnName, columnType){
 
 // 从token拿用户数据
 export function GetUserInfoFromToken(req){
-  const token = req.headers.authorization;
-  if(!token) return false
-  const userInfo = jwt.verify(token, config.jwtSecretKey);
-  if(!userInfo) return false
-  return userInfo
+  try{
+    const token = req.headers.authorization;
+    if(!token) return false
+    const userInfo = jwt.verify(token, config.jwtSecretKey);
+    if(!userInfo) return false
+    return userInfo
+  } catch{
+    return false
+  }
+  
 }
 
 
