@@ -9,9 +9,6 @@ export const useStore = defineStore  ('main',{
     state:():object=>{
         return {
             islogin:0,//是否登录
-            top_navigation_bar_li_color:"#000000",//导航栏字体颜色
-            top_navigation_bar_login_background_color:"",//导航栏背景颜色
-            top_navigation_bar_height:"14rem",//导航栏高度
         }
     },
     /***

@@ -54,9 +54,7 @@ import { storeToRefs } from "pinia";
 import { ElIcon } from "element-plus";
 import { VideoPlay, Postcard, Clock, Message } from "@element-plus/icons-vue";
 const store = useStore();
-const { top_navigation_bar_height } = storeToRefs(store);
 
-store.top_navigation_bar_height = "5rem";
 </script>
 
 <style lang="less" scoped>

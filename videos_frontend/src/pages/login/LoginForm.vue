@@ -98,13 +98,9 @@ const submitForm = async (formEl: any): Promise<void> => {
       try {
         LoginInPost(dataObject)?.then(function (res) {
           // console.log(res.data.token);
-          if (res.data.status == 0) {
-            store.loginIn();
-            localStorage.setItem("token", res.data.token);
-            router.go(-1);
-          } else if (res.data.status == 403) {
-            ElMessage({ message: res.data.message, offset: 200 });
-          }
+          store.loginIn();
+          localStorage.setItem("token", res.token);
+          router.go(-1);
         });
       } catch (error) {
         console.log(error);
@@ -121,7 +117,7 @@ const goToRegister = () => {
 </script>
 
 <style lang="less" scoped>
-.form-box{
+.form-box {
   width: 30%;
 }
 

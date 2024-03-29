@@ -152,9 +152,9 @@ onMounted(async () => {
   barrageWidth = ~~window.getComputedStyle(barrageBoxWrap as Element)["width"].replace('px', '');
   barrageHeight = ~~window.getComputedStyle(barrageBoxWrap as Element)["height"].replace('px', '');
 
-  barrageArray.forEach(function (item) {
-    que.push(item.text); //放进队列
-  });
+  // barrageArray.forEach(function (item) {
+  //   que.push(item.text); //放进队列
+  // });
   render(false);
 
   // const movieSrc = await GetMovie()

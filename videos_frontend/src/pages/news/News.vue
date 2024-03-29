@@ -1,6 +1,14 @@
 <template>
-    <h1>在开发中，敬请期待</h1>
+    <!-- <h1>在开发中，敬请期待</h1> -->
+    <div >
+
+    </div>
 </template>
+
+<script setup lang="ts">
+
+
+</script>
 
 <style lang="less" scoped>
 h1{

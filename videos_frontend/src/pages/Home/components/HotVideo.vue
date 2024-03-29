@@ -1,7 +1,7 @@
 <template>
   <!-- 热点视频 -->
   <div class="hot_video">
-    <div  class="hot_video_left block">
+    <div class="hot_video_left block">
       <el-carousel trigger="click">
         <el-carousel-item
           v-for="(item, index) in 4"
@@ -17,73 +17,59 @@
       </el-carousel>
     </div>
     <div class="hot_video_right">
-      <div
-        class="hot_video_right_area"
-        v-for="(item, index) in data.hot_video_img"
-        :key="item.id"
-      >
-        <div class="hot_video_right_box">
-          <a
-            :style="
-              'background-image: url(./src/assets/image/' +
-              (index + 2) +
-              '.jpg);background-size: contain;'
-            "
-            class="hot_video_right_content"
-            href="#"
-          >
-            <div class="hot_video_right_info">
-              <p class="hot_video_right_info_title">{{ item.title }}</p>
-              <p class="hot_video_right_info_up">{{ item.up }}</p>
-              <p class="hot_video_right_info_num">{{ item.number }}</p>
-            </div>
-          </a>
-        </div>
-        <div class="hot_video_right_watch"></div>
-      </div>
+      <template v-for="item in data.hot_video_img" :key="item.id">
+        <VideoCell :movieData="item" />
+      </template>
     </div>
   </div>
 </template>
 
-<script lang="ts"  setup>
+<script lang="ts" setup>
+import { VideoCell } from "../../../components";
 const data = {
   //热点视频
   hot_video_img: [
     {
-      title: "金Bili辉煌的一天",
-      up: "up: ****",
-      number: 123+"播放",
-      id:1,
+      movieName: "金Bili辉煌的一天",
+      author: "up: ****",
+      viewNumber: 123 + "播放",
+      imgUrl: "./src/assets/image/3.jpg",
+      id: 1,
     },
     {
-      title: "FPX VS LNG",
-      up: "up: ****",
-      number: 123+"播放",
-      id:2,
+      movieName: "FPX VS LNG",
+      author: "up: ****",
+      viewNumber: 123 + "播放",
+      imgUrl: "./src/assets/image/3.jpg",
+      id: 2,
     },
     {
-      title: "转世重生前没喝孟婆汤吧！",
-      up: "up: ****",
-      number: 123+"播放",
-      id:3,
+      movieName: "转世重生前没喝孟婆汤吧！",
+      author: "up: ****",
+      viewNumber: 123 + "播放",
+      imgUrl: "./src/assets/image/3.jpg",
+      id: 3,
     },
     {
-      title: "林浩 | 李成阳 |这还是极挑抢金条那两？",
-      up: "up: ****",
-      number: 123,
-      id:4,
+      movieName: "林浩 | 李成阳 |这还是极挑抢金条那两？",
+      author: "up: ****",
+      viewNumber: 123,
+      imgUrl: "./src/assets/image/3.jpg",
+      id: 4,
     },
     {
-      title: "《封神之战》",
-      up: "up: ****",
-      number: 123,
-      id:5,
+      movieName: "《封神之战》",
+      author: "up: ****",
+      viewNumber: 123,
+      imgUrl: "./src/assets/image/3.jpg",
+      id: 5,
     },
     {
-      title: "峡 谷 分 析 师",
-      up: "up: ****",
-      number: 123,
-      id:6,
+      movieName: "峡 谷 分 析 师",
+      author: "up: ****",
+      viewNumber: 123,
+      imgUrl: "./src/assets/image/3.jpg",
+      id: 6,
     },
   ],
 };
@@ -100,9 +86,9 @@ const data = {
     color: #000000;
   }
   .hot_video_left {
-    border-radius: .5rem;
-    width: calc(39.7 * 1.3rem - .7rem);
-    height: calc(17.5 * 1.3rem - .4rem);
+    border-radius: 0.5rem;
+    width: calc(39.7 * 1.3rem - 0.7rem);
+    height: calc(17.5 * 1.3rem - 0.4rem);
     background-size: contain;
     display: flex;
     justify-content: start;
@@ -136,19 +122,19 @@ const data = {
   .hot_video_right {
     position: relative;
     width: 56rem;
-    height: calc(17.5 * 1.3rem - .4rem);
+    height: calc(17.5 * 1.3rem - 0.4rem);
     display: flex;
     flex-wrap: wrap;
     align-content: space-between;
     .hot_video_right_area::before {
-      content: '';
+      content: "";
       position: absolute;
       z-index: 1;
       bottom: 0;
       left: 0;
       width: 17rem;
       height: 4.8rem;
-      background-image: url(../../assets/image/18.jpg);
+      background-image: url(../../../assets/image/18.jpg);
       background-size: contain;
       background-repeat: repeat-x;
       border-radius: 0 0 2px 2px;
@@ -160,15 +146,15 @@ const data = {
       height: 9.7rem;
       position: relative;
       .hot_video_right_box::before {
-        content: '';
+        content: "";
         position: absolute;
         left: 0;
         top: 0;
         height: 100%;
         width: 100%;
-        background: #000000B0;
+        background: #000000b0;
         opacity: 0;
-        transition: opacity .2s;
+        transition: opacity 0.2s;
       }
       .hot_video_right_box {
         position: relative;
@@ -188,15 +174,15 @@ const data = {
             width: 100%;
             top: 64px;
             left: 0;
-            transition: top .2s;
+            transition: top 0.2s;
             p {
               display: -webkit-box;
               -webkit-box-orient: vertical;
               -webkit-line-clamp: 1;
               overflow: hidden;
               font-size: 1.4rem;
-              color: #FFFFFF;
-              margin-bottom: .6rem;
+              color: #ffffff;
+              margin-bottom: 0.6rem;
             }
             .hot_video_right_info_up {
               font-size: 1.2rem;
@@ -210,15 +196,15 @@ const data = {
       .hot_video_right_watch {
         position: absolute;
         z-index: 10;
-        right: .8rem;
-        bottom: .8rem;
+        right: 0.8rem;
+        bottom: 0.8rem;
         width: 2.8rem;
         height: 2.8rem;
         cursor: pointer;
-        background-image: url(../../assets/image/19.jpg);
+        background-image: url(../../../assets/image/19.jpg);
         background-size: contain;
         opacity: 0;
-        transition: opacity .2s;
+        transition: opacity 0.2s;
       }
     }
     .hot_video_right_area:hover {
@@ -237,7 +223,7 @@ const data = {
       }
       .hot_video_right_watch {
         opacity: 1;
-        transition-delay: .2s;
+        transition-delay: 0.2s;
       }
     }
   }
@@ -250,21 +236,21 @@ const data = {
   height: 10px;
   border: 2px solid transparent;
   border-radius: 50%;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   vertical-align: middle;
   cursor: pointer;
-  transition: all .2s;
+  transition: all 0.2s;
   opacity: 1;
 }
 
 ::v-deep .el-carousel__indicator:hover button {
-  border: 2px solid #FFFFFF;
-  background-color: #00A1D6;
+  border: 2px solid #ffffff;
+  background-color: #00a1d6;
   transform: scale(1.3);
 }
 
 ::v-deep .el-carousel__indicator--horizontal.is-active .el-carousel__button {
-  background-image: url(../../assets/image/17.jpg);
+  background-image: url(../../../assets/image/17.jpg);
   border-width: 0;
   border-color: transparent;
   background-color: transparent;
@@ -272,68 +258,4 @@ const data = {
   background-repeat: no-repeat;
   transform: scale(1.8);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </style>
-

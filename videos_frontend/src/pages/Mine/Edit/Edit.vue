@@ -1,37 +1,67 @@
 <template>
-  <div class="upload-page">
-    <HeadLine
-      :top_navigation_bar_login_background_color="'#ffffff'"
-      top_navigation_bar_search_background_color="#ffffff !important"
-      top_navigation_bar_shadow="0 2px 4px #00000014 !important"
-    ></HeadLine>
-
+  <div class="mine-page">
+    <div class="form-item-button">
+      <el-button type="primary" size="large" @click="toggleReadOnly(true)"
+        >取消</el-button
+      >
+      <el-button type="primary" size="large" @click="submitForm(ruleFormRef)"
+        >确认修改</el-button
+      >
+    </div>
     <ElForm
       ref="ruleFormRef"
       :rules="rules"
-      :model="ruleForm"
-      class="upload-form"
+      :model="ruleFormCopy"
+      class="mine-form"
     >
-      <ElFormItem prop="movieUrl" required class="form-select">
-        <ElUpload
-          ref="movieUpload"
-          class="upload-movie"
-          action="#"
-          drag
-          :auto-upload="false"
-          :limit="1"
-          :on-exceed="(files) => handleExceed(files, movieUpload)"
-          :on-change="beforeMovieUpload"
-        >
-          <el-icon class="el-icon--upload"><UploadFilled /></el-icon>
-          <div class="el-upload__text">点击或拖拽上传视频（.mp4）</div>
-        </ElUpload>
+      <ElFormItem
+        required
+        prop="phoneNumber"
+        label="手机号："
+        label-width="100px"
+        class="form-select"
+      >
+        <ElInput
+          type="text"
+          disabled
+          v-model="ruleFormCopy.phoneNumber"
+          autocomplete="off"
+        />
+      </ElFormItem>
+      <ElFormItem
+        required
+        prop="userName"
+        label-width="100px"
+        label="用户昵称："
+        class="form-select"
+      >
+        <ElInput
+          type="text"
+          placeholder="请输入"
+          v-model="ruleFormCopy.userName"
+          autocomplete="off"
+        />
       </ElFormItem>
 
-      <ElFormItem prop="imgUrl" required label-width="0px" class="form-select">
+      <ElFormItem
+        prop="userAge"
+        label-width="100px"
+        label="年龄："
+        class="form-select"
+      >
+        <ElInput
+          type="text"
+          placeholder="请输入"
+          v-model="ruleFormCopy.userAge"
+          autocomplete="off"
+        />
+      </ElFormItem>
+
+      <ElFormItem prop="userImgUrl" label-width="0px" class="form-select">
         <ElUpload
+          v-model:file-list="imgFileList"
           ref="imgUpload"
-          class="upload-movie"
+          class="mine-movie"
           action="#"
           drag
           :auto-upload="false"
@@ -41,40 +71,20 @@
           list-type="picture"
         >
           <el-icon class="el-icon--upload"><UploadFilled /></el-icon>
-          <div class="el-upload__text">点击或拖拽上传封面（.png/.jpg）</div>
+          <div class="el-upload__text">点击或拖拽上传头像(.png/.jpg)</div>
+
         </ElUpload>
-      </ElFormItem>
-
-      <ElFormItem
-        required
-        prop="movieName"
-        label="视频标题"
-        class="form-select"
-      >
-        <ElInput
-          type="text"
-          placeholder="请输入"
-          v-model="ruleForm.movieName"
-          autocomplete="off"
-        />
-      </ElFormItem>
-
-      <ElFormItem class="form-button">
-        <el-button type="primary" size="large" @click="submitForm(ruleFormRef)"
-          >确认上传</el-button
-        >
       </ElFormItem>
     </ElForm>
     <!-- <input type="file" ref="fileInput" />
-
-    <el-button type="success" @click="upload"> upload to server </el-button> -->
+  
+      <el-button type="success" @click="upload"> upload to server </el-button> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { HeadLine } from "../../components";
 import { FileUploaderClient } from "easy-file-uploader-client";
-import { ref, Ref } from "vue";
+import { ref, defineProps, PropType, watch, onMounted } from "vue";
 import {
   ElUpload,
   genFileId,
@@ -90,7 +100,7 @@ import {
   UploadPart,
   FinishUpload,
   confirmUpload,
-} from "../../api/request.js";
+} from "../../../api/request.js";
 import type {
   UploadInstance,
   UploadProps,
@@ -98,42 +108,66 @@ import type {
   FormInstance,
   FormRules,
 } from "element-plus";
-
-interface RuleForm {
-  movieUrl: string;
-  imgUrl: string;
-  movieName: string;
-}
+import type { RuleForm } from "../enum.ts";
 
 enum UploadingFileType {
-  "movie" = "movie",
   "img" = "img",
 }
 
 const ruleFormRef = ref<FormInstance>();
 
-const ruleForm = ref<RuleForm>({
-  movieUrl: "",
-  imgUrl: "",
-  movieName: "",
+const ruleFormCopy = ref<RuleForm>({
+  userName: "",
+  userImgUrl: "",
+  userAge: "",
+  phoneNumber: "",
 });
+
+const props = defineProps({
+  ruleForm: Object as PropType<RuleForm>,
+  toggleReadOnly: Function as PropType<(status: boolean) => void>,
+  userInfoChange: Function as PropType<(ruleForm: RuleForm) => void>,
+});
+
+const imgFileList = ref<UploadProps["fileList"]>([]);
 
 const rules = ref<FormRules<RuleForm>>({
-  movieUrl: [{ required: true, message: "视频资源不能为空", trigger: "blur" }],
-  imgUrl: [{ required: true, message: "视频封面不能为空", trigger: "blur" }],
-  movieName: [{ required: true, message: "视频标题不能为空", trigger: "blur" }],
+  userName: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
 });
 
-const movieUpload = ref<UploadInstance>();
 const imgUpload = ref<UploadInstance>();
 const uploadingFile = ref<File>();
 const uploadingFileType = ref<UploadingFileType>();
 
 let loading;
 
-const fileInput = ref(null);
 const HOST = "http://localhost:3007/";
 let uploadId = "";
+
+watch(
+  () => props.ruleForm,
+  (cur, pre) => {
+    // console.log(cur, pre);
+    ruleFormCopy.value = cur;
+    imgFileList.value = [
+      {
+        name: "头像",
+        url: cur.userImgUrl,
+      },
+    ];
+  }
+);
+
+onMounted(()=>{
+  // console.log(props.ruleForm)
+  ruleFormCopy.value = props.ruleForm;
+    imgFileList.value = [
+      {
+        name: "头像",
+        url: props.ruleForm.userImgUrl,
+      },
+    ];
+})
 
 // 实例化模块对象
 const fileUploaderClient = new FileUploaderClient({
@@ -182,14 +216,7 @@ const fileUploaderClient = new FileUploaderClient({
       });
       console.log(`上传完成，存储地址为：${HOST}${path}`);
 
-      switch (uploadingFileType.value) {
-        case UploadingFileType.movie:
-          ruleForm.value.movieUrl = `${HOST}${path}`;
-          break
-        case UploadingFileType.img:
-          ruleForm.value.imgUrl = `${HOST}${path}`;
-          break
-      }
+      ruleFormCopy.value.userImgUrl = `${HOST}${path}`;
 
       //   const { data } = await axios.post(`${HOST}api/FinishUpload`, {
       //     name: fileName,
@@ -213,35 +240,11 @@ const handleExceed = (files: File[], uploadRef: UploadInstance) => {
   uploadRef!.handleStart(file);
 };
 
-const beforeMovieUpload: UploadProps["onChange"] = async (uploadFile) => {
+const beforeImgUpload: UploadProps["onChange"] = async (uploadFile) => {
   //   console.log(uploadFile.raw.type);
   //   movieUpload.value.handleRemove(uploadFile);
-  if (uploadFile.raw.type !== "video/mp4") {
-    ElMessage.error("视频后缀需为 .mp4");
-    movieUpload.value.handleRemove(uploadFile);
-    return false;
-  } else if (uploadFile.raw.size / 1024 / 1024 > 50) {
-    ElMessage.error("视频大小不能超过 50M");
-    movieUpload.value.handleRemove(uploadFile);
-    return false;
-  }
-  loading = ElLoading.service({
-    lock: true,
-    text: "Loading",
-    // background: "rgba(0, 0, 0, 0.7)",
-  });
-  uploadingFile.value = uploadFile.raw;
-  uploadingFileType.value = UploadingFileType.movie;
-  await fileUploaderClient.uploadFile(uploadFile.raw);
-  //   movieUpload.value.handleStart(uploadFile.raw);
-  //   return true;
-};
-
-const beforeImgUpload: UploadProps["onChange"] = async (uploadFile) => {
-    console.log(uploadFile.raw.type);
-  //   movieUpload.value.handleRemove(uploadFile);
-  if (uploadFile.raw.type !== "image/png"  && uploadFile.raw.type !== "image/jpeg") {
-    ElMessage.error("图片后缀需为 .png");
+  if (uploadFile.raw.type !== "image/png" && uploadFile.raw.type !== "image/jpeg") {
+    ElMessage.error("图片后缀需为 .png/.jpg");
     imgUpload.value.handleRemove(uploadFile);
     return false;
   } else if (uploadFile.raw.size / 1024 / 1024 > 2) {
@@ -252,7 +255,6 @@ const beforeImgUpload: UploadProps["onChange"] = async (uploadFile) => {
   loading = ElLoading.service({
     lock: true,
     text: "Loading",
-    // background: "rgba(0, 0, 0, 0.7)",
   });
   uploadingFile.value = uploadFile.raw;
   uploadingFileType.value = UploadingFileType.img;
@@ -265,31 +267,30 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
-      console.log("submit!", ruleForm.value);
-      confirmUpload(ruleForm.value);
+      console.log("submit!", ruleFormCopy.value);
+      props?.userInfoChange(ruleFormCopy.value);
     } else {
       console.log("error submit!", fields);
     }
   });
 };
-
-// 上传按钮点击后触发的事件
-const upload = () => {
-  fileUploaderClient.uploadFile(fileInput.value.files[0]);
-};
 </script>
 
 <style lang="less" scoped>
-.upload-page {
+.mine-page {
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 100%;
+  position: relative;
 }
-.upload-form {
+.form-item-button {
+  position: absolute;
+  top: -75px;
+  right: 70px;
+}
+.mine-form {
   width: 70%;
-  margin-top: 100px;
-  .upload-movie {
+  .mine-movie {
     width: 100%;
   }
 }

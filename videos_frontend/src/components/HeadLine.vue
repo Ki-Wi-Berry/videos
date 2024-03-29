@@ -1,6 +1,5 @@
 <template>
-  <nav class="top_navigation" 
-  >
+  <nav class="top_navigation">
     <ul
       class="top_navigation_bar"
       :style="{ 'box-shadow': top_navigation_bar_shadow }"
@@ -32,7 +31,7 @@
               v-model="data.inputValue"
               @keyup.enter="add"
               type="text"
-              placeholder="海贼王"
+              placeholder="请输入"
               :style="{
                 'background-color': top_navigation_bar_search_background_color,
               }"
@@ -80,36 +79,28 @@
       >
         <div class="top_navigation_bar_login_box">
           <router-link
+            v-if="store.islogin"
+            to="#"
             :class="{
               top_navigation_bar_login: true,
               show_login_box_drop: data.login_box_animation == 1,
               hide_login_box_drop: data.login_box_animation == 0,
             }"
-            :style="
-              store.islogin
-                ? {
-                    'background-image': 'url(./src/assets/image/22.jpg)',
-                    'z-index':'99999'
-                  }
-                : {
-                    'background-color':
-                      top_navigation_bar_login_background_color,
-                  }
-            "
+            :style="{
+              'background-image': `url(${headerUserInfo?.userImgUrl})`,
+            }"
           >
-            <router-link
-              :class="{
-                router_link_login: true,
-              }"
-              to="/login"
-              :style="
-                store.islogin
-                  ? { opacity: 0 }
-                  : { color: top_navigation_bar_li_color }
-              "
-              >登录</router-link
-            >
           </router-link>
+          <router-link
+            v-else
+            :class="{
+              router_link_login: true,
+            }"
+            to="/login"
+            >登录</router-link
+          >
+
+          <!-- 登录下拉框 -->
           <div
             :class="{
               top_navigation_bar_login_drop: true,
@@ -119,18 +110,12 @@
             v-show="data.login_box_drop"
           >
             <div class="top_navigation_bar_login_username">
-              <span>Kiwi_猕猴桃</span>
-            </div>
-            <div class="top_navigation_bar_login_coin">
-              <span class="color1">硬币:</span
-              ><span class="color2">&nbsp;207&nbsp;&nbsp;</span>
-              <span class="color1">B币:</span
-              ><span class="color2">&nbsp;0</span>
+              <span>{{ headerUserInfo?.userName }}</span>
             </div>
             <div class="top_navigation_bar_login_status_box">
               <div
                 class="top_navigation_bar_login_status"
-                v-for="item in data.top_navigation_bar_login_status"
+                v-for="item in followFanList"
                 :key="item.text"
               >
                 <span class="top_navigation_bar_login_nums">{{
@@ -151,9 +136,7 @@
             <!-- 退出登录 -->
             <div
               @click="login_out"
-              class="
-                top_navigation_bar_unlogin top_navigation_bar_login_user_space
-              "
+              class="top_navigation_bar_unlogin top_navigation_bar_login_user_space"
             >
               <div class="top_navigation_bar_login_user_box">
                 <el-icon class="avatar"><moon-night /></el-icon>
@@ -185,8 +168,8 @@
   </nav>
 </template>
 
-<script lang="ts"  setup>
-import { reactive } from "vue";
+<script lang="ts" setup>
+import { computed, onMounted, reactive, ref } from "vue";
 import {
   Search,
   Close,
@@ -198,6 +181,7 @@ import { ElButton } from "element-plus";
 import { storeToRefs } from "pinia";
 import { defineProps } from "vue";
 import { useStore } from "../store";
+import { getHeaderUserInfo } from "../api/request";
 const store = useStore();
 // const {count} = storeToRefs(Store)
 
@@ -217,25 +201,18 @@ const data = reactive({
   inputValue: "",
   home_top_navigation_list: ["海贼王", "元龙", "狐妖小红娘"],
   top_navigation_bar_left: [
-    "主站",
-    "番剧",
-    "游戏中心",
-    "直播",
-    "会员购",
-    "漫画",
-    "赛事",
-    "下载APP",
+    "首页",
+    "首页",
+    "首页",
+    "首页",
+    "首页",
+    "首页",
+    "首页",
+    "首页",
   ],
-  top_navigation_bar_right: [
-    "大会员",
-    "消息",
-    "动态",
-    "收藏",
-    "历史",
-    "创作中心",
-  ],
+  top_navigation_bar_right: ["首页", "首页", "首页", "首页", "首页", "首页"],
   top_navigation_bar_href_left: ["/home", "/", "/", "/", "/", "/", "/", "/"],
-  top_navigation_bar_herf_right: ["/", "/news", "/news", "/news", "/news", "/"],
+  top_navigation_bar_herf_right: ["/", "/", "/", "/", "/", "/"],
   browsing_history_show_or_not1: 0,
   top_navigation_bar_login_status: [
     {
@@ -246,34 +223,58 @@ const data = reactive({
       nums: "5",
       text: "粉丝",
     },
-    {
-      nums: "0",
-      text: "动态",
-    },
   ],
   login_box_drop: 0,
   login_box_animation: 2,
 });
+
+const followFanList = computed(() => {
+  return [
+    {
+      nums: headerUserInfo.value?.followNumber || 0,
+      text: "关注",
+    },
+    {
+      nums: headerUserInfo.value?.fanNumber || 0,
+      text: "粉丝",
+    },
+  ];
+});
+
+interface HeaderUserInfo {
+  userId: string;
+  userName: string;
+  userImgUrl: string;
+  followNumber: number;
+  fanNumber: number;
+}
+
+const headerUserInfo = ref<HeaderUserInfo>();
+
+onMounted(async () => {
+  headerUserInfo.value = await getHeaderUserInfo();
+});
+
 // 添加历史记录
-const add = function ():void {
+const add = function (): void {
   data.home_top_navigation_list.push(data.inputValue);
 };
 // 删除历史记录
-const remove = function (index: number):void  {
+const remove = function (index: number): void {
   // console.log("删除");
   // console.log(index);
   data.home_top_navigation_list.splice(index, 1);
 };
 // 清空历史记录
-const clear = function ():void  {
+const clear = function (): void {
   data.home_top_navigation_list = [];
 };
 // 显示历史记录
-const show_browsing_history1 = function ():void  {
+const show_browsing_history1 = function (): void {
   data.browsing_history_show_or_not1 = 1;
 };
 // 隐藏历史记录
-const hide_browsing_history1 = function ():void  {
+const hide_browsing_history1 = function (): void {
   document.addEventListener("click", (e) => {
     var box = document.getElementById("search_record_box_id") as HTMLElement;
     if (!box.contains(e.target as Node | null)) {
@@ -286,7 +287,7 @@ const hide_browsing_history1 = function ():void  {
 let show_drop_time, hide_drop_time, hide_drop_time_plus;
 
 // 显示登录下拉菜单
-const show_login_box_animation = async function ():Promise<void>  {
+const show_login_box_animation = async function (): Promise<void> {
   if (store.islogin) {
     clearTimeout(hide_drop_time);
     clearTimeout(hide_drop_time_plus);
@@ -298,7 +299,7 @@ const show_login_box_animation = async function ():Promise<void>  {
 };
 
 // 隐藏登录下拉菜单
-const hide_login_box_drop = async function ():Promise<void> {
+const hide_login_box_drop = async function (): Promise<void> {
   if (store.islogin) {
     clearTimeout(show_drop_time);
     hide_drop_time = await setTimeout(() => {
@@ -311,7 +312,7 @@ const hide_login_box_drop = async function ():Promise<void> {
 };
 
 // 退出登录
-const login_out = function ():void {
+const login_out = function (): void {
   console.log("退出登录");
   store.loginOut();
 };
@@ -349,10 +350,10 @@ const login_out = function ():void {
         width: 3.5rem;
 
         .top_navigation_bar_login {
-          z-index: 10;
+          z-index: 1000;
           position: absolute;
           transform-origin: top;
-          top: .8rem;
+          top: 0.8rem;
           width: 3.5rem;
           height: 3.5rem;
           border-radius: 50% !important;
@@ -361,7 +362,7 @@ const login_out = function ():void {
           justify-content: center;
           align-items: center;
           .router_link_login {
-            color: #00A1D6 !important;
+            color: #00a1d6 !important;
           }
         }
         .top_navigation_bar_login_drop {
@@ -373,7 +374,7 @@ const login_out = function ():void {
           z-index: 100;
           height: auto;
           width: 28rem;
-          background-color: #FFFFFF;
+          background-color: #ffffff;
           display: flex;
           flex-wrap: wrap;
           flex-direction: row;
@@ -391,7 +392,7 @@ const login_out = function ():void {
             color: #000000;
           }
           .top_navigation_bar_login_coin {
-            margin-top: .5rem;
+            margin-top: 0.5rem;
             width: 100%;
             height: 2rem;
             display: flex;
@@ -400,11 +401,11 @@ const login_out = function ():void {
             font-size: 1.2rem;
             color: #000000;
             .color1 {
-              color: #A7A9AB;
+              color: #a7a9ab;
             }
           }
           .top_navigation_bar_login_status_box {
-            border-top: #A7A9AB85 .1rem solid;
+            border-top: #a7a9ab85 0.1rem solid;
             margin-top: 1.5rem;
             padding-top: 1.5rem;
             height: 4rem;
@@ -425,7 +426,7 @@ const login_out = function ():void {
                 font-size: 1.7rem;
               }
               .top_navigation_bar_login_text {
-                color: #A7A9AB;
+                color: #a7a9ab;
               }
             }
           }
@@ -447,7 +448,7 @@ const login_out = function ():void {
               align-items: center;
               height: 4rem;
               width: 85%;
-              border-radius: .5rem;
+              border-radius: 0.5rem;
               .avatar {
                 height: 4rem;
                 width: 4rem;
@@ -455,7 +456,7 @@ const login_out = function ():void {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                opacity: .5;
+                opacity: 0.5;
               }
               span {
                 height: 4rem;
@@ -470,11 +471,11 @@ const login_out = function ():void {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                opacity: .5;
+                opacity: 0.5;
               }
             }
             .top_navigation_bar_login_user_box:hover {
-              background-color: #B1B1B191;
+              background-color: #b1b1b191;
               span {
                 color: #000000 !important;
                 text-decoration: none;
@@ -484,7 +485,7 @@ const login_out = function ():void {
         }
       }
       .show_login_box_drop {
-        animation: rightDownMove .2s forwards;
+        animation: rightDownMove 0.2s forwards;
       }
       @keyframes rightDownMove {
         from {
@@ -495,7 +496,7 @@ const login_out = function ():void {
         }
       }
       .hide_login_box_drop {
-        animation: leftUpMove .6s forwards;
+        animation: leftUpMove 0.6s forwards;
       }
       @keyframes leftUpMove {
         from {
@@ -506,7 +507,7 @@ const login_out = function ():void {
         }
       }
       .show_login_box_drop_plus {
-        animation: show_login_drop .6s forwards;
+        animation: show_login_drop 0.6s forwards;
       }
       @keyframes show_login_drop {
         from {
@@ -517,7 +518,7 @@ const login_out = function ():void {
         }
       }
       .hide_login_box_drop_plus {
-        animation: hide_login_drop .6s forwards;
+        animation: hide_login_drop 0.6s forwards;
       }
       @keyframes hide_login_drop {
         from {
@@ -545,38 +546,38 @@ const login_out = function ():void {
         .top_navigation_bar_input {
           display: flex;
           justify-content: space-between;
-          background-color: #FFFFFF;
-          padding-left: .5rem;
-          margin-top: .5rem;
-          border-radius: .5rem;
+          background-color: #ffffff;
+          padding-left: 0.5rem;
+          margin-top: 0.5rem;
+          border-radius: 0.5rem;
           input {
             font-size: 1.4rem;
             height: 4rem;
             width: 21rem;
-            color: #A7A9AB;
-            border-radius: .5rem;
+            color: #a7a9ab;
+            border-radius: 0.5rem;
           }
           input::-webkit-input-placeholder {
-            color: #E7E7E7;
+            color: #e7e7e7;
           }
           input:focus {
-            color: #87888A;
+            color: #87888a;
             input::-webkit-input-placeholder {
-              color: #87888A;
+              color: #87888a;
             }
           }
           .el-icon-search {
-            border-radius: 0 .5rem .5rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
             border: 0;
             height: 4rem;
             width: 5rem;
-            background-color: #E7E7E7;
+            background-color: #e7e7e7;
           }
         }
         // 浏览记录
         .browsing_history {
           z-index: 1;
-          margin-top: .1rem;
+          margin-top: 0.1rem;
           height: auto;
           width: 21rem;
           display: flex;
@@ -584,10 +585,10 @@ const login_out = function ():void {
           justify-content: start;
           box-shadow: 0 2px 4px #00000014 !important;
           .browsing_history_li {
-            background-color: #FFFFFF;
+            background-color: #ffffff;
             width: 21rem;
             height: 4rem;
-            color: #A7A9AB;
+            color: #a7a9ab;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -596,7 +597,7 @@ const login_out = function ():void {
               border-radius: 0;
               border: 0;
               height: 4rem;
-              background-color: #FFFFFF;
+              background-color: #ffffff;
             }
           }
           .browsing_history_li_title {
@@ -606,17 +607,17 @@ const login_out = function ():void {
             .browsing_history_clear {
               height: 4rem;
               width: 4rem;
-              background-color: #FFFFFF;
+              background-color: #ffffff;
               display: flex;
               justify-content: center;
               align-items: center;
               button:hover {
-                color: #00A1D6;
+                color: #00a1d6;
               }
               .browsing_history_clear_button {
-                background-color: #FFFFFF;
+                background-color: #ffffff;
                 border: 0;
-                color: #A7A9AB;
+                color: #a7a9ab;
                 // justify-content: center;
                 // align-content: center;
               }
@@ -626,7 +627,7 @@ const login_out = function ():void {
       }
       // 投稿
       .contribute {
-        background-color: #FB7299;
+        background-color: #409eff;
         height: 70%;
         width: 9rem;
         text-align: center;
@@ -635,13 +636,11 @@ const login_out = function ():void {
         align-items: center;
         margin-right: 2rem;
         a {
-          color: #F4F4F4 !important;
+          color: #ffffff !important;
+          font-weight: 500;
         }
       }
     }
   }
 }
-
-
 </style>
-

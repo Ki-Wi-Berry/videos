@@ -15,7 +15,6 @@ import RegisterForm from "./RegisterForm.vue";
 import { useStore } from "../../store";
 const store = useStore();
 
-store.top_navigation_bar_height="14rem";
 </script>
 
 <style lang="less" scoped >

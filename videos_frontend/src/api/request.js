@@ -78,3 +78,38 @@ export const confirmUpload = (data,config)=>{
     })
 }
 
+// 获取用户详细信息
+export const getUserInfoDetail = (data) => {
+    return axios({
+        url: "http://localhost:3007/api/getUserInfoDetail",
+        method: "get",
+        data
+    })
+}
+
+// 获取顶栏所需个人信息
+export const getHeaderUserInfo = (data) => {
+    return axios({
+        url: "http://localhost:3007/api/getHeaderUserInfo",
+        method: "get",
+        data
+    })
+}
+
+// 修改用户详细信息
+export const changeUserInfoDetail = (data) => {
+    return axios({
+        url: "http://localhost:3007/api/changeUserInfoDetail",
+        method: "post",
+        data
+    })
+}
+
+// 获取我的视频
+export const getUserMovies = (data) => {
+    return axios({
+        url: "http://localhost:3007/api/getUserMovies",
+        method: "get",
+        data
+    })
+}

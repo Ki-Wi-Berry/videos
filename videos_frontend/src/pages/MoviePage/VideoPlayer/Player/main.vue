@@ -445,7 +445,7 @@ const setFrontEndPreload = async () => {
 // 预处理预览图
 const preloadVideoThumbs = () => {
 
-  state.Vvideo?.addEventListener('canplay', setFrontEndPreload)
+  // state.Vvideo?.addEventListener('canplay', setFrontEndPreload)
 }
 
 // debounce(1000,true,preloadVideoThumbs);
@@ -511,7 +511,7 @@ const init = (): void => {
     Hls.attachMedia(state.dVideo);
     Hls3.attachMedia(state.Vvideo);
     Hls.on(Hls2.Events.MEDIA_ATTACHED, () => {
-      Hls.loadSource('http://localhost:3001/mergedUploadFile/ea4b9032c51563d78fe7fcd435cbcdf1/chunk/index.m3u8');
+      Hls.loadSource('http://localhost:3007/mergedUploadFile/ea4b9032c51563d78fe7fcd435cbcdf1/chunk/index.m3u8');
       // 加载可用质量级别
       Hls.on('hlsManifestParsed', (ev, data) => {
         // console.log(data)
@@ -522,7 +522,7 @@ const init = (): void => {
     })
 
     Hls3.on(Hls2.Events.MEDIA_ATTACHED, () => {
-      Hls3.loadSource('http://localhost:3001/mergedUploadFile/ea4b9032c51563d78fe7fcd435cbcdf1/chunk/index.m3u8');
+      // Hls3.loadSource('http://localhost:3007/mergedUploadFile/ea4b9032c51563d78fe7fcd435cbcdf1/chunk/index.m3u8');
     })
 
     Hls.on('hlsLevelSwitching', (ev, data) => {

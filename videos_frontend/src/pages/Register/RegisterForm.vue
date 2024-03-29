@@ -17,7 +17,7 @@
       <el-form-item prop="userName" class="form-select">
         <el-input
           type="text"
-          placeholder="请输入用户名"
+          placeholder="请输入用户昵称"
           v-model="ruleForm.userName"
           autocomplete="off"
         />
@@ -143,19 +143,15 @@ const submitForm = async (formEl: any): Promise<void> => {
       };
       RegUser(dataObject)?.then(function (res) {
         // console.log(res.data.token);
-        if (res.data.status == 0) {
-          store.loginIn();
-          localStorage.setItem("token", res.data.token);
-          ElMessage({
-            message: "注册成功",
-            type: "success",
-          });
-          setTimeout(() => {
-            router.go(-1);
-          }, 1000);
-        } else if (res.data.status == 403) {
-          ElMessage({ message: res.data.message, offset: 200, type: "error" });
-        }
+        store.loginIn();
+        localStorage.setItem("token", res.token);
+        ElMessage({
+          message: "注册成功",
+          type: "success",
+        });
+        setTimeout(() => {
+          router.go(-1);
+        }, 1000);
       });
     } else {
       console.log("error submit!", fields);

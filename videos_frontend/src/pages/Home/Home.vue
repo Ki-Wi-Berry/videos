@@ -30,7 +30,6 @@ const store = useStore();
 
 // const {top_navigation_bar_height} = storeToRefs(store);
 
-store.top_navigation_bar_height="14rem";
 </script>
 
 <style lang="less" scoped>
