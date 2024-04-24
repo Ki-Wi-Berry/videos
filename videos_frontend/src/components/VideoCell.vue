@@ -4,7 +4,7 @@
       <a
         :style="`background-image: url(${movieData?.imgUrl});`"
         class="video_content"
-        href="#"
+        :href="`/movie/${movieData?.movieId}`"
       >
         <div class="video_info">
           <p class="video_info_title">{{ movieData?.movieName }}</p>

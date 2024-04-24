@@ -2,18 +2,16 @@
   <nav class="top_navigation">
     <ul
       class="top_navigation_bar"
-      :style="{ 'box-shadow': top_navigation_bar_shadow }"
+      :style="{ 'box-shadow': '0 2px 4px #00000014 !important' }"
     >
       <li
         class="top_navigation_bar_li"
         v-for="(item, index) in data.top_navigation_bar_left"
         :key="item"
       >
-        <router-link
-          :to="data.top_navigation_bar_href_left[index]"
-          :style="'color:' + top_navigation_bar_li_color + ';'"
-          >{{ item }}</router-link
-        >
+        <router-link :to="data.top_navigation_bar_href_left[index]">{{
+          item
+        }}</router-link>
       </li>
       <!-- 搜索导航 -->
       <li class="top_navigation_bar_li">
@@ -22,7 +20,7 @@
           <div
             class="top_navigation_bar_input"
             :style="{
-              'background-color': top_navigation_bar_search_background_color,
+              'background-color': '#ffffff',
             }"
           >
             <input
@@ -33,13 +31,13 @@
               type="text"
               placeholder="请输入"
               :style="{
-                'background-color': top_navigation_bar_search_background_color,
+                'background-color': '#ffffff',
               }"
             />
             <el-button :icon="Search" class="el-icon-search"></el-button>
           </div>
           <!-- 浏览记录-->
-          <div
+          <!-- <div
             class="browsing_history"
             v-show="data.browsing_history_show_or_not1"
           >
@@ -65,7 +63,7 @@
                 ></el-button>
               </li>
             </ul>
-          </div>
+          </div> -->
         </div>
       </li>
       <!-- 登录模块 -->
@@ -80,14 +78,16 @@
         <div class="top_navigation_bar_login_box">
           <router-link
             v-if="store.islogin"
-            to="#"
+            to="/mine"
             :class="{
               top_navigation_bar_login: true,
               show_login_box_drop: data.login_box_animation == 1,
               hide_login_box_drop: data.login_box_animation == 0,
             }"
             :style="{
-              'background-image': `url(${headerUserInfo?.userImgUrl})`,
+              'background-image': `url(${
+                headerUserInfo?.userImgUrl || defaultUserImgUrl
+              })`,
             }"
           >
           </router-link>
@@ -126,7 +126,7 @@
                 }}</span>
               </div>
             </div>
-            <router-link to="/" class="top_navigation_bar_login_user_space">
+            <router-link to="/mine" class="top_navigation_bar_login_user_space">
               <div class="top_navigation_bar_login_user_box">
                 <el-icon class="avatar"><avatar /></el-icon>
                 <span>个人中心</span>
@@ -152,11 +152,9 @@
         v-for="(item, index) in data.top_navigation_bar_right"
         :key="item"
       >
-        <router-link
-          :to="data.top_navigation_bar_herf_right[index]"
-          :style="'color:' + top_navigation_bar_li_color + ';'"
-          >{{ item }}</router-link
-        >
+        <router-link :to="data.top_navigation_bar_herf_right[index]">{{
+          item
+        }}</router-link>
       </li>
       <li class="top_navigation_bar_li">
         <router-link to="/upload" class="contribute">
@@ -170,6 +168,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 import {
   Search,
   Close,
@@ -183,15 +182,14 @@ import { defineProps } from "vue";
 import { useStore } from "../store";
 import { getHeaderUserInfo } from "../api/request";
 const store = useStore();
+import { defaultUserImgUrl } from "../const/const";
 // const {count} = storeToRefs(Store)
+
+const router = useRouter();
 
 const props = defineProps({
   // 导航栏阴影
   top_navigation_bar_shadow: String,
-  // 所有字体颜色
-  top_navigation_bar_li_color: String,
-  // 登录框背景颜色
-  top_navigation_bar_login_background_color: String,
   // 搜索框背景颜色
   top_navigation_bar_search_background_color: String,
 });
@@ -211,7 +209,7 @@ const data = reactive({
     "首页",
   ],
   top_navigation_bar_right: ["首页", "首页", "首页", "首页", "首页", "首页"],
-  top_navigation_bar_href_left: ["/home", "/", "/", "/", "/", "/", "/", "/"],
+  top_navigation_bar_href_left: ["/", "/", "/", "/", "/", "/", "/", "/"],
   top_navigation_bar_herf_right: ["/", "/", "/", "/", "/", "/"],
   browsing_history_show_or_not1: 0,
   top_navigation_bar_login_status: [
@@ -230,14 +228,14 @@ const data = reactive({
 
 const followFanList = computed(() => {
   return [
-    {
-      nums: headerUserInfo.value?.followNumber || 0,
-      text: "关注",
-    },
-    {
-      nums: headerUserInfo.value?.fanNumber || 0,
-      text: "粉丝",
-    },
+    // {
+    //   nums: headerUserInfo.value?.followNumber || 0,
+    //   text: "关注",
+    // },
+    // {
+    //   nums: headerUserInfo.value?.fanNumber || 0,
+    //   text: "粉丝",
+    // },
   ];
 });
 
@@ -255,9 +253,15 @@ onMounted(async () => {
   headerUserInfo.value = await getHeaderUserInfo();
 });
 
-// 添加历史记录
+// 跳转到搜索页面
 const add = function (): void {
-  data.home_top_navigation_list.push(data.inputValue);
+  // data.home_top_navigation_list.push(data.inputValue);
+  router.push({
+    name: "search",
+    query: {
+      content: data.inputValue,
+    },
+  });
 };
 // 删除历史记录
 const remove = function (index: number): void {
@@ -325,6 +329,7 @@ const login_out = function (): void {
   max-width: 200rem;
   top: 0;
   width: 100%;
+  background-color: #ffffff;
   // height: 14rem;
   .top_navigation_bar {
     padding-left: 2rem;
@@ -361,9 +366,17 @@ const login_out = function (): void {
           display: flex;
           justify-content: center;
           align-items: center;
-          .router_link_login {
-            color: #00a1d6 !important;
-          }
+        }
+        .router_link_login {
+          margin-top: 0.8rem;
+          width: 3.5rem;
+          height: 3.5rem;
+          border-radius: 50% !important;
+          background-color: #cfd0d0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #00a1d6 !important;
         }
         .top_navigation_bar_login_drop {
           opacity: 0;
@@ -549,6 +562,7 @@ const login_out = function (): void {
           background-color: #ffffff;
           padding-left: 0.5rem;
           margin-top: 0.5rem;
+          border: #a7a9ab4c 1px solid;
           border-radius: 0.5rem;
           input {
             font-size: 1.4rem;

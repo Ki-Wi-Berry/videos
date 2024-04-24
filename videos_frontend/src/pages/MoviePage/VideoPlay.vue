@@ -1,13 +1,25 @@
 <template>
   <div class="video_play" style="text-align: center">
-    <videoPlay :key="options.src" ref="video" style="display: inline-block; width: 100%" v-bind="options" />
-    <div class="barrage-container">
-    </div>
+    <videoPlay
+      ref="video"
+      style="display: inline-block; width: 100%"
+      v-bind="options"
+      :movieUrl="movieUrl"
+      :movieImgUrl="movieImgUrl"
+      :onMovieTimeChange="onMovieTimeChange"
+    />
+    <div class="barrage-container"></div>
   </div>
   <div class="pop_up">
-    <span class="pop_up_span">&nbsp;已装填2000条弹幕</span>
+    <span class="pop_up_span"></span>
     <div class="send_wrap">
-      <input v-model="data.inputValue" type="text" class="input" placeholder="发个友善的弹幕见证当下" @keydown.enter="sendMsg">
+      <input
+        v-model="data.inputValue"
+        type="text"
+        class="input"
+        placeholder="发个友善的弹幕见证当下"
+        @keydown.enter="sendMsg"
+      />
       <div class="send_btn">
         <span class="send_btn_span" @click="sendMsg">发送</span>
       </div>
@@ -17,31 +29,30 @@
 
 <script setup lang="ts">
 import { reactive, ref, nextTick, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { ElMessage } from "element-plus";
 import { videoPlay } from "./VideoPlayer/index.ts";
-import {GetMovie} from '../../api/request.js'
-import Hls2 from "hls.js";
-import { queue, NODE } from "../../utils/queue" //队列轮子
+import { getMovieInfo, addBarrage, getBarrage,addMovieViews } from "../../api/request.js";
+import { queue, NODE } from "../../utils/queue"; //队列轮子
+import syncControl from "../../utils/syncControl.js";
 
-
-const options: { 
+const options: {
   width: string;
-   height: string; 
-   color: string; 
-   muted: boolean; 
-   webFullScreen: boolean; 
-   autoPlay: boolean; 
-   currentTime: number; 
-   loop: boolean; 
-   mirror: boolean; 
-   ligthOff: boolean; 
-   volume: number; 
-   control: boolean;
-   title:string;
-   type:string;
-   src:string;
-   poster:string;
-   controlBtns: string[]; 
-  }= reactive({
+  height: string;
+  color: string;
+  muted: boolean;
+  webFullScreen: boolean;
+  autoPlay: boolean;
+  currentTime: number;
+  loop: boolean;
+  mirror: boolean;
+  ligthOff: boolean;
+  volume: number;
+  control: boolean;
+  title: string;
+  type: string;
+  controlBtns: string[];
+} = reactive({
   width: "800px",
   height: "450px",
   color: "#409eff",
@@ -56,14 +67,8 @@ const options: {
   control: true, //是否显示控制器
   title: "", //视频名称
   type: "m3u8",
-  // src:'/src/assets/videos/x36xhzz.m3u8',
-  src:'http://localhost:3007/api/demo2',
-  // src: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", //视频源
-  // src: "https://logos-channel.scaleengine.net/logos-channel/live/biblescreen-ad-free/playlist.m3u8", //视频源
-  poster: "https://cdn.jsdelivr.net/gh/xdlumia/files/video-play/ironMan.jpg", //封面
   controlBtns: [
     "audioTrack",
-    "quality",
     "speedRate",
     "volume",
     "setting",
@@ -73,188 +78,160 @@ const options: {
   ],
 });
 
-const data: { inputValue: string; } = reactive({
+const route = useRoute();
+
+const movieId = ref(route.params.movieId || 0);
+const movieTime = ref<number>(0);
+const movieUrl = ref<string>("");
+const movieImgUrl = ref<string>("");
+
+const syncControls = new syncControl();
+
+const barrageTipWidth: number = 50; //提示语的长度
+
+let barrageBoxWrap: Element,
+  barrageBox: Element,
+  barrageWidth: number,
+  barrageHeight: number;
+let barrageQueue = new queue();
+
+const data: { inputValue: string } = reactive({
   inputValue: "",
 });
 
 
-
-let barrageArray: {
-  url: string,
-  text: string,
-  level: number
-}[] = [
-    {
-      url: '用户头像',
-      text: '秋天爱美丽',
-      level: 10
-    },
-    {
-      url: '用户头像',
-      text: '今天很开心啊',
-      level: 10
-    },
-    {
-      url: '用户头像',
-      text: 'winter has come',
-      level: 10
-    },
-    {
-      url: '',
-      text: '土耳其现在形势',
-      level: 10
-    },
-    {
-      url: '',
-      text: '没事早点回家吃饭啊',
-      level: 10
-    },
-    {
-      url: '',
-      text: '这主角真实醉了，不会回啊',
-      level: 10
-    },
-    {
-      url: '',
-      text: '背景音乐真好听啊',
-      level: 10
-    },
-    {
-      url: '',
-      text: '背景音乐是***',
-      level: 10
-    },
-    {
-      url: '',
-      text: '经费在燃烧啊',
-      level: 10
-    },
-    {
-      url: '',
-      text: '国产良心剧',
-      level: 10
-    },
-  ];
 let barrageColorArray: string[] = [
-  '#0099CC', '#333333', '#009966', '#FFFF66', '#9933FF', '#FFFF99', '#CCCCFF', '#CC9933', '#FFFF66'
+  "#0099CC",
+  "#333333",
+  "#009966",
+  "#FFFF66",
+  "#9933FF",
+  "#FFFF99",
+  "#CCCCFF",
+  "#CC9933",
+  "#FFFF66",
 ];
-const barrageTipWidth: number = 50; //提示语的长度
-
-let barrageBoxWrap: Element, barrageBox: Element, barrageWidth: number, barrageHeight: number;
-let que = new queue();
-let renderTimer: NodeJS.Timeout | null;
-
-onMounted(async () => {
-  barrageBoxWrap = document.querySelector('.video_play') as Element;
-  barrageBox = document.querySelector('.barrage-container') as Element;
-  // console.log(barrageBox);
-  //容器的宽高度
-  barrageWidth = ~~window.getComputedStyle(barrageBoxWrap as Element)["width"].replace('px', '');
-  barrageHeight = ~~window.getComputedStyle(barrageBoxWrap as Element)["height"].replace('px', '');
-
-  // barrageArray.forEach(function (item) {
-  //   que.push(item.text); //放进队列
-  // });
-  render(false);
-
-  // const movieSrc = await GetMovie()
-  // options.src = movieSrc[0]
-})
 
 
 //保证顺序
-function render(isSendMsg: boolean):void {
-  if (que.length > 0) {
-    // console.log(que.length );
+function render(isSendMsg: boolean): void {
+  if (barrageQueue.length > 0) {
+    // console.log(barrageQueue.length );
     setTimeout(() => {
-      let item: string = que.front() as string;
-      que.pop();
+      let item: string = barrageQueue.front() as string;
+      barrageQueue.pop();
       createBarrage(item, isSendMsg);
       render(isSendMsg);
     }, 2000);
   }
 }
 
+
+const onMovieTimeChange = async (curTime: number) => {
+  syncControls.run(async () => {
+    movieTime.value = curTime;
+    console.log("movieTime.value", movieTime.value);
+    const {barrageList} = await getBarrage({
+      movieId: movieId.value,
+      movieTime: movieTime.value,
+    });
+    console.log(barrageList);
+    barrageList.forEach(function (item) {
+      barrageQueue.push(item);
+    });
+    render(true);
+  });
+};
+
 //发送
-function sendMsg():boolean|undefined {
+async function sendMsg() {
   let inputValue = data.inputValue;
   inputValue.replace(/\ +/g, "");
 
   if (inputValue.length <= 0) {
-    alert('请输入');
+    alert("请输入");
     return false;
   }
 
+  await addBarrage({
+    content: inputValue,
+    movieId: movieId.value,
+    movieTime: movieTime.value,
+  });
+  ElMessage.success({
+    message: "发送成功",
+    type: "success",
+  });
+
   //生成弹幕
-  que.push(inputValue); //放进队列
   render(true);
-  data.inputValue = '';
+  data.inputValue = "";
 }
 
-
 //创建弹幕
-function createBarrage(msg:string, isSendMsg:boolean):void {
-  let divNode: HTMLDivElement = document.createElement('div');
-  let spanNode: HTMLSpanElement = document.createElement('span');
+function createBarrage(msg: string, isSendMsg: boolean): void {
+  let divNode: HTMLDivElement = document.createElement("div");
+  let spanNode: HTMLSpanElement = document.createElement("span");
 
   divNode.innerHTML = msg;
-  divNode.classList.add('barrage-item');
+  divNode.classList.add("barrage-item");
   barrageBox.appendChild(divNode);
 
-  spanNode.innerHTML = '举报';
-  spanNode.classList.add('barrage-tip');
+  spanNode.innerHTML = "举报";
+  spanNode.classList.add("barrage-tip");
   divNode.appendChild(spanNode);
 
-  let barrageOffsetLeft:number = barrageWidth;
-  barrageOffsetLeft = isSendMsg ? barrageWidth : barrageOffsetLeft
-  let barrageOffsetTop:number = getRandom(10, barrageHeight - 10);
-  let barrageColor:string = barrageColorArray[Math.floor(Math.random() * (barrageColorArray.length))];
+  let barrageOffsetLeft: number = barrageWidth;
+  barrageOffsetLeft = isSendMsg ? barrageWidth : barrageOffsetLeft;
+  let barrageOffsetTop: number = getRandom(10, barrageHeight - 10);
+  let barrageColor: string =
+    barrageColorArray[Math.floor(Math.random() * barrageColorArray.length)];
 
   //执行初始化滚动
   initBarrage.call(divNode, {
     left: barrageOffsetLeft,
     top: barrageOffsetTop,
-    color: barrageColor
+    color: barrageColor,
   });
 }
 
 //初始化弹幕移动(速度，延迟)
-function initBarrage(obj :{left:number,top:number,color:string}):void {
+function initBarrage(obj: { left: number; top: number; color: string }): void {
   //初始化
   obj.top = obj.top || 0;
   // obj.class = obj.color || '#fff';
-  this.style.left = obj.left + 'px';
-  this.style.top = obj.top + 'px';
+  this.style.left = obj.left + "px";
+  this.style.top = obj.top + "px";
   this.style.color = obj.color;
 
   //添加属性
   this.distance = 0;
-  this.width = ~~window.getComputedStyle(this).width.replace('px', '');
+  this.width = ~~window.getComputedStyle(this).width.replace("px", "");
   // this.offsetLeft = obj.left;
   this.timer = null;
 
   //弹幕子节点
   let barrageChileNode = this.children[0];
-  barrageChileNode.style.left = (this.width - barrageTipWidth) / 2 + 'px';
+  barrageChileNode.style.left = (this.width - barrageTipWidth) / 2 + "px";
 
   //运动
   barrageAnimate(this);
 
   //停止
   this.onmouseenter = function () {
-    barrageChileNode.style.display = 'block';
+    barrageChileNode.style.display = "block";
     cancelAnimationFrame(this.timer);
   };
 
   this.onmouseleave = function () {
-    barrageChileNode.style.display = 'none';
+    barrageChileNode.style.display = "none";
     barrageAnimate(this);
   };
 
   //举报
   barrageChileNode.onclick = function () {
-    alert('举报成功');
-  }
+    alert("举报成功");
+  };
 }
 
 //弹幕动画
@@ -275,57 +252,38 @@ function barrageAnimate(obj) {
 //移动
 function move(obj) {
   obj.distance--;
-  obj.style.transform = 'translateX(' + obj.distance + 'px)';
-  obj.style.webkitTransform = 'translateX(' + obj.distance + 'px)';
+  obj.style.transform = "translateX(" + obj.distance + "px)";
+  obj.style.webkitTransform = "translateX(" + obj.distance + "px)";
 }
 
 //随机获取高度
-function getRandom(start:number, end:number):number {
-  return start + (Math.random() * (end - start));
+function getRandom(start: number, end: number): number {
+  return start + Math.random() * (end - start);
 }
 
 
-/*******初始化事件**********/
-//系统数据
+onMounted(async () => {
+  await addMovieViews({ movieId: movieId.value });
+  const data = await getMovieInfo({ movieId: movieId.value });
+  movieUrl.value = data.movieUrl;
+  movieImgUrl.value = data.imgUrl;
 
+  barrageBoxWrap = document.querySelector(".video_play") as Element;
+  barrageBox = document.querySelector(".barrage-container") as Element;
+  // console.log(barrageBox);
+  //容器的宽高度
+  barrageWidth = ~~window
+    .getComputedStyle(barrageBoxWrap as Element)
+    ["width"].replace("px", "");
+  barrageHeight = ~~window
+    .getComputedStyle(barrageBoxWrap as Element)
+    ["height"].replace("px", "");
 
-
-//回车
-
-
-
-//兼容写法
-// (function () {
-//   let lastTime = 0;
-//   let vendors = ['webkit', 'moz'];
-//   for (let x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-//     window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-//     window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||    // Webkit中此取消方法的名字变了
-//       window[vendors[x] + 'CancelRequestAnimationFrame'];
-//   }
-
-//   if (!window.requestAnimationFrame) {
-//     window.requestAnimationFrame = function (callback, element) {
-//       let currTime = new Date().getTime();
-//       let timeToCall = Math.max(0, 16.7 - (currTime - lastTime));
-//       let id = window.setTimeout(function () {
-//         callback(currTime + timeToCall);
-//       }, timeToCall);
-//       lastTime = currTime + timeToCall;
-//       return id;
-//     };
-//   }
-//   if (!window.cancelAnimationFrame) {
-//     window.cancelAnimationFrame = function (id) {
-//       clearTimeout(id);
-//     };
-//   }
-// })();
-
-
+  render(false);
+});
 </script>
 
-<style scoped lang="less" >
+<style scoped lang="less">
 .video_play {
   position: relative;
 
@@ -341,7 +299,6 @@ function getRandom(start:number, end:number):number {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-
   }
 }
 
@@ -352,7 +309,7 @@ function getRandom(start:number, end:number):number {
   left: 100%;
   white-space: nowrap;
   cursor: pointer;
-  color: #FFFFFF;
+  color: #ffffff;
 
   .barrage-tip {
     display: none;
@@ -361,18 +318,18 @@ function getRandom(start:number, end:number):number {
     padding: 7px 15px;
     line-height: 12px;
     font-size: 12px;
-    color: #F20606;
-    background-color: #FFFFFF;
+    color: #f20606;
+    background-color: #ffffff;
     white-space: nowrap;
-    border: 1px solid #DDDDDD;
+    border: 1px solid #dddddd;
     border-radius: 8px;
-    -webkit-box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
-    box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
+    -webkit-box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.1);
     -webkit-transform-origin: 15px 100%;
     -ms-transform-origin: 15px 100%;
     transform-origin: 15px 100%;
-    -webkit-animation: tipScale .4s;
-    animation: tipScale .4s;
+    -webkit-animation: tipScale 0.4s;
+    animation: tipScale 0.4s;
   }
 }
 
@@ -387,7 +344,7 @@ function getRandom(start:number, end:number):number {
   .pop_up_span {
     font-size: 1.3rem;
     color: rgb(136, 136, 136);
-    letter-spacing: .2rem;
+    letter-spacing: 0.2rem;
   }
 
   .send_wrap {
@@ -397,20 +354,20 @@ function getRandom(start:number, end:number):number {
       width: 30rem;
       height: 3.8rem;
       outline: none;
-      border-radius: .5rem 0 0 .5rem;
+      border-radius: 0.5rem 0 0 0.5rem;
       padding: 0;
       padding-left: 1rem;
-      background-color: rgba(194, 194, 194, .4);
+      background-color: rgba(194, 194, 194, 0.4);
     }
 
     .send_btn {
       height: 3.8rem;
       width: 6rem;
       text-align: center;
-      color: #FFFFFF;
+      color: #ffffff;
       font-size: 1.5rem;
-      background-color: #00AEEC;
-      border-radius: 0 .5rem .5rem 0;
+      background-color: #00aeec;
+      border-radius: 0 0.5rem 0.5rem 0;
       position: relative;
       overflow: hidden;
       cursor: pointer;
@@ -422,7 +379,3 @@ function getRandom(start:number, end:number):number {
 }
 </style>
 
-
-
-
-./VideoPlayer/index.js

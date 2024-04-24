@@ -10,6 +10,7 @@
     "@vitejs/plugin-vue": "^2.2.4",
     "axios": "^0.26.1",
     "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.10",
     "easy-file-uploader-client": "^1.0.5",
     "element-plus": "^2.5.0",
     "hls.js": "^1.0.10",

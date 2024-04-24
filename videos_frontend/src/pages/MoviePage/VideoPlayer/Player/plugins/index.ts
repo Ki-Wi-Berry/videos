@@ -17,7 +17,7 @@ export const videoEmits = [
     'stalled',
 
 ]
-export const defineProps = {
+export const videoProps = {
     width: { type: String, default: '800px' },
     height: { type: String, default: '450px' },
     color: { type: String, default: '#409eff' },

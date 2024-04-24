@@ -2,9 +2,6 @@
   <div class="videos_home_page">
     <!-- 导航栏 -->
     <head-line
-      class="HeadLine"
-      :top_navigation_bar_li_color="'#ffffff'"
-      :top_navigation_bar_login_background_color="'#ffffff'"
     ></head-line>
     <!-- 分类 -->
     <content-classification></content-classification>
@@ -40,11 +37,6 @@ const store = useStore();
   flex-wrap: wrap;
   padding-top: 0;
   background-color: #F4F4F4;
-  ::v-deep .HeadLine {
-    background-image: url(../../assets/image/21.jpg);
-    background-size: contain;
-    color: #F4F4F4 !important;
-  }
   ::v-deep .HeadLine::before {
     content: '';
     position: absolute;

@@ -4,22 +4,22 @@
     <!-- 标题 -->
     <div class="movie_title">
       <div class="movie_title_name">
-        <span class="movie_title_name_span"> 视频demo </span>
+        <span class="movie_title_name_span"> {{headerInfo?.movieName}} </span>
       </div>
       <div class="movie_title_data">
         <el-icon><VideoPlay /></el-icon>
-        <span class="movie_title_data_span">&nbsp;176.0万&nbsp;&nbsp;</span>
+        <span class="movie_title_data_span">&nbsp;{{ headerInfo?.viewNumber }}&nbsp;&nbsp;</span>
         <el-icon><Postcard /></el-icon>
-        <span class="movie_title_data_span">&nbsp;3341&nbsp;&nbsp;</span>
+        <span class="movie_title_data_span">&nbsp;{{ headerInfo?.barrageNumber }}&nbsp;&nbsp;</span>
         <el-icon><Clock /></el-icon>
-        <span class="movie_title_data_span">&nbsp;2021-02-05 20:29:29 </span>
+        <span class="movie_title_data_span">&nbsp;{{ updateTimes }} </span>
       </div>
     </div>
     <!-- UP主 -->
     <div class="movie_up">
       <!-- 头像 -->
       <div class="movie_up_img_box">
-        <img src="../../assets/image/23.jpg" alt="头像" class="movie_up_img" />
+        <img :src="headerInfo?.userImgUrl||defaultUserImgUrl" alt="头像" class="movie_up_img" />
       </div>
       <!-- 右半部分 -->
       <div class="movie_up_right">
@@ -27,34 +27,57 @@
         <div class="movie_up_right_top">
           <!-- name -->
           <span class="movie_up_right_top_span"
-            >L先生努力做视频&nbsp;&nbsp;</span
+            >{{headerInfo?.userName}}&nbsp;&nbsp;</span
           >
-          <div class="movie_up_right_top_icon">
-            <el-icon><Message /></el-icon>
-            <span class="movie_up_right_top_icon_span">&nbsp;发消息</span>
-          </div>
         </div>
         <div class="movie_up_right_mid">
-          游戏王整活up 坚持自己打素材 快递到了就co...
+          {{headerInfo?.description || '该作者很懒，还没有简介'}}
         </div>
-        <div class="movie_up_right_bottom">
+        <!-- <div class="movie_up_right_bottom">
           <el-button type="primary" class="movie_up_right_bottom_button">
-            + &nbsp;关注&nbsp;2480
+            + &nbsp;关注&nbsp;{{ headerInfo?.fanNumber }}
           </el-button>
-        </div>
-        
+        </div> -->
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts"  setup>
+<script lang="ts" setup>
 import { useStore } from "../../store";
 import { storeToRefs } from "pinia";
-import { ElIcon } from "element-plus";
+import { ElIcon,dayjs } from "element-plus";
 import { VideoPlay, Postcard, Clock, Message } from "@element-plus/icons-vue";
-const store = useStore();
+import { getMoviePageHeaderInfo } from "../../api/request";
+import { computed, onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
+import {defaultUserImgUrl} from '../../const/const'
 
+const store = useStore();
+const route = useRoute();
+
+interface HeaderInfo {
+  movieName: string;
+  updateTime: string;
+  viewNumber: number;
+  userName: string;
+  description?: string;
+  fanNumber: number;
+  userImgUrl: string;
+  barrageNumber:number
+}
+
+const movieId = ref(route.params.movieId || 0);
+
+const headerInfo = ref<HeaderInfo>();
+const updateTimes = computed(() =>(dayjs(headerInfo.value?.updateTime).format('YYYY-MM-DD HH:mm:ss')))
+
+
+
+
+onMounted(async () => {
+  headerInfo.value = await getMoviePageHeaderInfo({movieId:movieId.value});
+});
 </script>
 
 <style lang="less" scoped>
@@ -107,7 +130,8 @@ const store = useStore();
       display: flex;
       flex-wrap: wrap;
       .movie_up_right_top {
-        height: 30%;
+        margin-top: 10px;
+        // height: 30%;
         width: 100%;
         display: flex;
         // justify-content: center;
@@ -134,15 +158,13 @@ const store = useStore();
         color: rgb(169, 169, 169);
         font-size: 1.1rem;
       }
-      .movie_up_right_bottom
-      {
+      .movie_up_right_bottom {
         height: 50%;
         width: 100%;
         display: flex;
         // justify-content: center;
         align-items: center;
-        .movie_up_right_bottom_button
-        {
+        .movie_up_right_bottom_button {
           width: 80%;
           height: 80%;
         }

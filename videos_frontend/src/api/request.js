@@ -113,3 +113,67 @@ export const getUserMovies = (data) => {
         data
     })
 }
+
+// 获取视频播放页顶栏信息
+export const getMoviePageHeaderInfo = (data) => {
+    return axios({
+        url: "http://localhost:3007/api/getMoviePageHeaderInfo",
+        method: "get",
+        data
+    })
+}
+
+// 获取视频播放页视频信息
+export const getMovieInfo = (data) => {
+    return axios({
+        url: "http://localhost:3007/api/getMovieInfo",
+        method: "get",
+        data
+    })
+}
+
+// 视频阅览量增加 1
+export const addMovieViews = (data) => {
+    return axios({
+        url: "http://localhost:3007/api/addMovieViews",
+        method: "post",
+        data
+    })
+}
+
+// 添加弹幕
+export const addBarrage = (data) => {
+    return axios({
+        url: "http://localhost:3007/api/addBarrage",
+        method: "post",
+        data
+    })
+}
+
+// 获取弹幕
+export const getBarrage = (data) => {
+    return axios({
+        url: "http://localhost:3007/api/getBarrage",
+        method: "get",
+        data
+    })
+}
+
+
+// 获取搜索页视频数据
+export const getSearchMovieList = (data) => {
+    return axios({
+        url: "http://localhost:3007/api/getSearchMovieList",
+        method: "get",
+        data
+    })
+}
+
+// 获取首页视频数据
+export const getHomeMovieList = (data) => {
+    return axios({
+        url: "http://localhost:3007/api/getHomeMovieList",
+        method: "get",
+        data
+    })
+}

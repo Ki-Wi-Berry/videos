@@ -44,6 +44,21 @@
       </ElFormItem>
 
       <ElFormItem
+        prop="description"
+        label-width="100px"
+        label="简介："
+        class="form-select"
+      >
+        <ElInput
+          type="text"
+          placeholder="请输入"
+          v-model="ruleFormCopy.description"
+          autocomplete="off"
+        />
+      </ElFormItem>
+
+
+      <ElFormItem
         prop="userAge"
         label-width="100px"
         label="年龄："
@@ -121,6 +136,7 @@ const ruleFormCopy = ref<RuleForm>({
   userImgUrl: "",
   userAge: "",
   phoneNumber: "",
+  description: "",
 });
 
 const props = defineProps({

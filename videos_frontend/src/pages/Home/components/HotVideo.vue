@@ -17,7 +17,7 @@
       </el-carousel>
     </div>
     <div class="hot_video_right">
-      <template v-for="item in data.hot_video_img" :key="item.id">
+      <template v-for="item in HotVideoList" :key="item.id">
         <VideoCell :movieData="item" />
       </template>
     </div>
@@ -25,7 +25,12 @@
 </template>
 
 <script lang="ts" setup>
+import { onMounted,ref } from "vue";
 import { VideoCell } from "../../../components";
+import {getHomeMovieList} from '../../../api/request'
+
+const HotVideoList = ref([]);
+
 const data = {
   //热点视频
   hot_video_img: [
@@ -73,6 +78,11 @@ const data = {
     },
   ],
 };
+
+onMounted(async () => {
+  const { movieList } = await getHomeMovieList()
+  HotVideoList.value = movieList
+})
 </script>
 
 <style lang="less" scoped>

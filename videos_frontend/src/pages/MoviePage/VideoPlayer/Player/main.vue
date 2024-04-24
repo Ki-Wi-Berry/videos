@@ -1,18 +1,37 @@
 <template>
-
-  <div ref="refPlayerWrap" id="refPlayerWrap" class="d-player-wrap" @mousemove="mouseMovewWarp" :class="{
-    'web-full-screen': state.webFullScreen,
-    'is-lightoff': state.lightOff,
-    'd-player-wrap-hover':
-      state.playBtnState == 'play' || state.isVideoHovering,
-  }">
-    <!-- 如果是移动端并且支持倍速 controls=true 否则为 false -->
+  <div
+    ref="refPlayerWrap"
+    id="refPlayerWrap"
+    class="d-player-wrap"
+    @mousemove="mouseMovewWarp"
+    :class="{
+      'web-full-screen': state.webFullScreen,
+      'is-lightoff': state.lightOff,
+      'd-player-wrap-hover':
+        state.playBtnState == 'play' || state.isVideoHovering,
+    }"
+  >
     <div class="d-player-video" id="dPlayerVideo">
-      <video ref="refdVideo" class="d-player-video-main" id="dPlayerVideoMain"
-        :controls="isMobile && state.speed ? true : false" :class="{ 'video-mirror': state.mirror }"
-        :webkit-playsinline="props.playsinline" :playsinline="props.playsinline" v-bind="videoEvents"
-        :volume="state.volume" :muted="state.muted" :loop="state.loop" :preload="preload" width="100%" height="100%"
-        :src="props.src" :poster="props.poster">您的浏览器不支持Video标签。</video>
+      <video
+        ref="refdVideo"
+        class="d-player-video-main"
+        id="dPlayerVideoMain"
+        :controls="false"
+        :class="{ 'video-mirror': state.mirror }"
+        :webkit-playsinline="props.playsinline"
+        :playsinline="props.playsinline"
+        v-bind="videoEvents"
+        :volume="state.volume"
+        :muted="state.muted"
+        :loop="state.loop"
+        :preload="preload"
+        width="100%"
+        height="100%"
+        :src="props.movieUrl"
+        :poster="props.movieImgUrl"
+      >
+        您的浏览器不支持Video标签。
+      </video>
     </div>
     <!-- 缓冲动画 -->
     <!-- <d-waitingloading text="正在缓冲..." v-show="state.waitingLoading" /> -->
@@ -21,8 +40,8 @@
       <div class="d-player-lightoff" v-show="state.lightOff"></div>
     </transition>
 
-    <!-- 状态栏 移动端不显示-->
-    <div class="d-player-state" v-if="!isMobile" @click="togglePlay">
+    <!-- 状态栏-->
+    <div class="d-player-state" @click="togglePlay">
       <transition name="d-scale-out">
         <!-- 播放按钮 -->
         <div class="d-play-btn" v-show="state.playBtnState == 'play'">
@@ -31,19 +50,37 @@
       </transition>
       <!-- 操作信息通知 -->
     </div>
-    <!-- 移动端不显示 -->
-    <input v-if="!isMobile" type="input" readonly ref="refInput" @dblclick="toggleFullScreenHandle"
-      @keyup.f="toggleFullScreenHandle" @keyup.esc="state.webFullScreen = false" @click="togglePlay"
-      @keydown.space="togglePlay" @keyup="keypress" @keydown.arrow-left="keydownLeft"
-      @keydown.arrow-up.arrow-down="volumeKeydown" @keydown="keypress" class="d-player-input" maxlength="0" />
+    <input
+      type="input"
+      readonly
+      ref="refInput"
+      @dblclick="toggleFullScreenHandle"
+      @keyup.f="toggleFullScreenHandle"
+      @keyup.esc="state.webFullScreen = false"
+      @click="togglePlay"
+      @keydown.space="togglePlay"
+      @keyup="keypress"
+      @keydown.arrow-left="keydownLeft"
+      @keydown.arrow-up.arrow-down="volumeKeydown"
+      @keydown="keypress"
+      class="d-player-input"
+      maxlength="0"
+    />
     <!-- 预加载动画 -->
     <d-loading :loadType="state.loadStateType" />
-    <!-- PC端播放按钮控制器  移动端调用自带控制器-->
-    <div class="d-player-control" ref="refPlayerControl" v-if="!isMobile && state.control">
+    <div class="d-player-control" ref="refPlayerControl">
       <div class="d-control-progress">
-        <d-slider class="d-progress-bar" @onMousemove="onProgressMove" @change="progressBarChange"
-          :disabled="!state.speed" :hoverText="state.progressCursorTime" v-model="state.playProgress"
-          :preload="state.preloadBar" :Thumbnails="state.Thumbnails" :totalTimeNumber="state.totalTimeNumber">
+        <d-slider
+          class="d-progress-bar"
+          @onMousemove="onProgressMove"
+          @change="progressBarChange"
+          :disabled="!state.speed"
+          :hoverText="state.progressCursorTime"
+          v-model="state.playProgress"
+          :preload="state.preloadBar"
+          :Thumbnails="state.Thumbnails"
+          :totalTimeNumber="state.totalTimeNumber"
+        >
         </d-slider>
       </div>
 
@@ -52,7 +89,10 @@
           <div class="d-tool-item" @click="togglePlay">
             <d-icon size="24" :icon="`icon-${state.playBtnState}`"></d-icon>
           </div>
-          <div class="d-tool-item d-tool-time audioTrack-btn" v-if="props.controlBtns.includes('audioTrack')">
+          <div
+            class="d-tool-item d-tool-time audioTrack-btn"
+            v-if="props.controlBtns.includes('audioTrack')"
+          >
             <span>{{ state.currentTime }}</span>
             <span style="margin: 0 3px">/</span>
             <span class="total-time">{{ state.totalTime }}</span>
@@ -60,47 +100,87 @@
         </div>
         <div class="d-tool-bar">
           <!-- 清晰度 -->
-          <div class="d-tool-item quality-btn"
-            v-if="state.qualityLevels.length && props.controlBtns.includes('quality')">
-            {{ state.qualityLevels.length && (state.qualityLevels[state.currentLevel] || {}).height }}P
+          <div
+            class="d-tool-item quality-btn"
+            v-if="
+              state.qualityLevels.length &&
+              props.controlBtns.includes('quality')
+            "
+          >
+            {{
+              state.qualityLevels.length &&
+              (state.qualityLevels[state.currentLevel] || {}).height
+            }}P
             <div class="d-tool-item-main">
-              <ul class="speed-main" style="text-align:center">
-                <li :class="{ 'speed-active': state.currentLevel == index }" @click="qualityLevelsHandle(row, index)"
-                  v-for="(row, index) of state.qualityLevels" :key="row">{{ row.height }}P</li>
+              <ul class="speed-main" style="text-align: center">
+                <li
+                  :class="{ 'speed-active': state.currentLevel == index }"
+                  @click="qualityLevelsHandle(row, index)"
+                  v-for="(row, index) of state.qualityLevels"
+                  :key="row"
+                >
+                  {{ row.height }}P
+                </li>
               </ul>
             </div>
           </div>
           <!-- 倍速播放 -->
-          <div class="d-tool-item speedRate-btn" v-if="props.controlBtns.includes('speedRate')">
+          <div
+            class="d-tool-item speedRate-btn"
+            v-if="props.controlBtns.includes('speedRate')"
+          >
             {{ state.speedActive == "1.0" ? "倍速" : state.speedActive + "x" }}
             <div class="d-tool-item-main">
               <ul class="speed-main">
-                <li :class="{ 'speed-active': state.speedActive == row }" @click="playbackRate(row)"
-                  v-for="row of state.speedRate" :key="row">{{ row }}x</li>
+                <li
+                  :class="{ 'speed-active': state.speedActive == row }"
+                  @click="playbackRate(row)"
+                  v-for="row of state.speedRate"
+                  :key="row"
+                >
+                  {{ row }}x
+                </li>
               </ul>
             </div>
           </div>
           <!-- 音量 -->
-          <div class="d-tool-item volume-btn" v-if="props.controlBtns.includes('volume')">
+          <div
+            class="d-tool-item volume-btn"
+            v-if="props.controlBtns.includes('volume')"
+          >
             <div class="d-tool-item-main volume-box" style="width: 52px">
               <div class="volume-main" :class="{ 'is-muted': state.muted }">
-                <span class="volume-text-size">{{ state.muted ? 0 : ~~(state.volume * 100) }}%</span>
+                <span class="volume-text-size"
+                  >{{ state.muted ? 0 : ~~(state.volume * 100) }}%</span
+                >
                 <!-- @change 如果修改音量则取消静音 -->
-                <d-slider @change="state.muted = false" :hover="false" size="5px" :vertical="true"
-                  v-model="state.volume"></d-slider>
+                <d-slider
+                  @change="state.muted = false"
+                  :hover="false"
+                  size="5px"
+                  :vertical="true"
+                  v-model="state.volume"
+                ></d-slider>
               </div>
             </div>
             <span @click="mutedHandler" style="display: flex">
-              <d-icon size="20" :icon="`icon-volume-${state.volume == 0 || state.muted
-              ? 'mute'
-              : state.volume > 0.5
-                ? 'up'
-                : 'down'
-              }`"></d-icon>
+              <d-icon
+                size="20"
+                :icon="`icon-volume-${
+                  state.volume == 0 || state.muted
+                    ? 'mute'
+                    : state.volume > 0.5
+                    ? 'up'
+                    : 'down'
+                }`"
+              ></d-icon>
             </span>
           </div>
           <!-- 设置 -->
-          <div class="d-tool-item setting-btn" v-if="props.controlBtns.includes('setting')">
+          <div
+            class="d-tool-item setting-btn"
+            v-if="props.controlBtns.includes('setting')"
+          >
             <d-icon size="20" class="rotateHover" icon="icon-settings"></d-icon>
             <div class="d-tool-item-main">
               <ul class="speed-main">
@@ -120,20 +200,29 @@
             </div>
           </div>
           <!-- 画中画 -->
-          <div class="d-tool-item pip-btn" v-if="props.controlBtns.includes('pip')"
-            @click="requestPictureInPictureHandle">
+          <div
+            class="d-tool-item pip-btn"
+            v-if="props.controlBtns.includes('pip')"
+            @click="requestPictureInPictureHandle"
+          >
             <d-icon size="20" icon="icon-pip"></d-icon>
             <div class="d-tool-item-main">画中画</div>
           </div>
           <!-- 网页全屏 -->
-          <div class="d-tool-item pip-btn" v-if="props.controlBtns.includes('pageFullScreen')"
-            @click="state.webFullScreen = !state.webFullScreen">
+          <div
+            class="d-tool-item pip-btn"
+            v-if="props.controlBtns.includes('pageFullScreen')"
+            @click="state.webFullScreen = !state.webFullScreen"
+          >
             <d-icon size="20" icon="icon-web-screen"></d-icon>
             <div class="d-tool-item-main">网页全屏</div>
           </div>
           <!-- 全屏 -->
-          <div class="d-tool-item fullScreen-btn" v-if="props.controlBtns.includes('fullScreen')"
-            @click="toggleFullScreenHandle">
+          <div
+            class="d-tool-item fullScreen-btn"
+            v-if="props.controlBtns.includes('fullScreen')"
+            @click="toggleFullScreenHandle"
+          >
             <div class="d-tool-item-main">全屏</div>
             <d-icon size="20" icon="icon-screen"></d-icon>
           </div>
@@ -142,11 +231,21 @@
     </div>
   </div>
   <div id="Vvideo_f">
-    <video id="Vvideo" ref="Vvideo" src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" controls="true"
-      preload="auto" crossOrigin="anonymous" width="400" height="200" v-show="false">
+    <video
+      id="Vvideo"
+      ref="Vvideo"
+      src=""
+      controls="true"
+      preload="auto"
+      crossOrigin="anonymous"
+      width="400"
+      height="200"
+      v-show="false"
+    >
       您的浏览器不支持 video 标签。
     </video>
   </div>
+
 </template>
 
 <script lang="ts">
@@ -163,7 +262,9 @@ import {
   onMounted,
   useAttrs,
   watch,
-  nextTick
+  nextTick,
+  defineProps,
+PropType,
 } from "vue";
 import { debounce } from "throttle-debounce";
 import Hls2 from "hls.js";
@@ -179,8 +280,14 @@ import {
   isMobile,
   firstUpperCase,
 } from "../utils/util";
-import { videoEmits, defineProps } from "./plugins/index";
-const props = defineProps(defineProps); //props
+import { queue } from "../../../../utils/queue"; //队列轮子
+import { videoEmits, videoProps } from "./plugins/index";
+const props = defineProps({
+  movieUrl: String,
+  movieImgUrl: String,
+  onMovieTimeChange: Function as PropType<(curTime: number) => void>,
+  ...videoProps,
+}); //props
 const emits = defineEmits([
   ...videoEmits,
   "mirrorChange",
@@ -193,6 +300,7 @@ const refdVideo: Ref<HTMLElement | null> = ref(null); // 视频播放器
 const Vvideo: Ref<HTMLElement | null> = ref(null); // 视频播放器
 const refPlayerControl: Ref<HTMLElement | null> = ref(null); //播放器控制器
 const refInput: Ref<HTMLElement | null> = ref(null); //快捷键操作
+const curTime: Ref<number> = ref(-1);
 const state = reactive({
   Vvideo: null,
   dVideo: null,
@@ -215,25 +323,27 @@ const state = reactive({
   isMultiplesPlay: false, //是否倍速播放
   longPressTimeout: null,
   progressCursorTime: "00:00:00", //进度条光标时间
-  qualityLevels: [], //分辨率数组
-  currentLevel: 0, //首选分辨率
-  Thumbnails: [],//缩略图
-
+  qualityLevels: [], 
+  currentLevel: 0, 
+  Thumbnails: [], //缩略图
 });
 const compose =
-  (...args):void =>
-    (value) =>
-      args.reverse().reduce((acc, fn) => fn(acc), value);
+  (...args): void =>
+  (value) =>
+    args.reverse().reduce((acc, fn) => fn(acc), value);
 // 收集video事件
-const videoEvents = videoEmits.reduce((events: Record<string, (...args: any[]) => void>, emit: string) => {
-  let name = `on${firstUpperCase(emit)}`;
-  events[name] = (ev) => {
-    state.loadStateType = emit;
-    emits(emit, ev);
-  };
+const videoEvents = videoEmits.reduce(
+  (events: Record<string, (...args: any[]) => void>, emit: string) => {
+    let name = `on${firstUpperCase(emit)}`;
+    events[name] = (ev) => {
+      state.loadStateType = emit;
+      emits(emit, ev);
+    };
 
-  return events;
-}, {});
+    return events;
+  },
+  {}
+);
 // 可以播放
 videoEvents["onCanplay"] = compose(videoEvents["onCanplay"], () => {
   if (state.playBtnState != "play") {
@@ -255,11 +365,11 @@ videoEvents["onEnded"] = compose(videoEvents["onEnded"], () => {
 videoEvents["onDurationchange"] = (ev) => {
   emits("durationchange", ev);
   if (props.currentTime != 0) {
-    state.dVideo.currentTime = props.currentTime
+    state.dVideo.currentTime = props.currentTime;
   }
 
   //更新当前时长的所有状态
-  videoEvents.onTimeupdate(ev)
+  videoEvents.onTimeupdate(ev);
 };
 
 // 缓冲下载中
@@ -277,6 +387,12 @@ videoEvents["onTimeupdate"] = (ev) => {
   emits("timeupdate", ev);
   let duration = ev.duration || ev.target.duration || 0; // 媒体总长
   let currentTime = ev.currentTime || ev.target.currentTime; // 当前媒体播放长度
+  console.log('currentTime',Math.floor(currentTime))
+  if(currentTime&&curTime.value !== Math.floor(currentTime)){
+    curTime.value = Math.floor(currentTime)
+    console.log('curTime',curTime.value,'currentTime',currentTime)
+    props.onMovieTimeChange?.(curTime.value)
+  }
   state.playProgress = currentTime / duration; //播放进度比例
   state.currentTime = timeFormat(currentTime);
   state.totalTime = timeFormat(duration);
@@ -298,7 +414,7 @@ const hexToRgbaColor = hexToRgba(state.color);
 // 清空当前操作类型
 const clearHandleType = debounce(500, true, () => {
   state.handleType = "";
-})
+});
 // 音量 +++ --
 const volumeKeydown = (ev) => {
   ev.preventDefault();
@@ -317,7 +433,7 @@ const keydownLeft = (ev) => {
     state.dVideo.currentTime < 10 ? 0.1 : state.dVideo.currentTime - 10;
   videoEvents.onTimeupdate(state.dVideo);
   playHandle();
-}
+};
 const keypress = (ev) => {
   ev.preventDefault();
   let pressType = ev.type;
@@ -412,41 +528,36 @@ const onProgressMove = (ev, val) => {
 };
 
 const setFrontEndPreload = async () => {
-  state.Vvideo?.removeEventListener('canplay', setFrontEndPreload);
+  state.Vvideo?.removeEventListener("canplay", setFrontEndPreload);
   // console.log(1);
   for (let i = 0; i <= state.Vvideo.duration; i += 3) {
     // setTimeout(() => {
-      // console.log(i);
-      let canvas = document.createElement("canvas");
-      const context = canvas.getContext('2d') ;
-      state.Vvideo.currentTime = i;
-      await new Promise(function (rsv) {
-        const event = function () {
-          context?.drawImage(state.Vvideo, 0, 0, 300, 150);
-          canvas.toBlob(function (blob) {
-            state.Thumbnails.push(URL.createObjectURL(blob as Blob));
-          }, "image/jpeg");
-          state.Vvideo?.removeEventListener('canplay', event);
-          rsv(null);
-        };
-        state.Vvideo?.addEventListener('canplay', event);
-
-      });
+    // console.log(i);
+    let canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    state.Vvideo.currentTime = i;
+    await new Promise(function (rsv) {
+      const event = function () {
+        context?.drawImage(state.Vvideo, 0, 0, 300, 150);
+        canvas.toBlob(function (blob) {
+          state.Thumbnails.push(URL.createObjectURL(blob as Blob));
+        }, "image/jpeg");
+        state.Vvideo?.removeEventListener("canplay", event);
+        rsv(null);
+      };
+      state.Vvideo?.addEventListener("canplay", event);
+    });
     // }, i*100);
-
   }
-  let video: HTMLElement = document.getElementById('Vvideo') as HTMLElement;
-  let video_f: HTMLElement = document.getElementById('Vvideo_f') as HTMLElement;
+  let video: HTMLElement = document.getElementById("Vvideo") as HTMLElement;
+  let video_f: HTMLElement = document.getElementById("Vvideo_f") as HTMLElement;
   video_f.removeChild(video);
-}
-
-
+};
 
 // 预处理预览图
 const preloadVideoThumbs = () => {
-
-  // state.Vvideo?.addEventListener('canplay', setFrontEndPreload)
-}
+  state.Vvideo?.addEventListener("canplay", setFrontEndPreload);
+};
 
 // debounce(1000,true,preloadVideoThumbs);
 
@@ -464,8 +575,8 @@ let Hls;
 
 // 播放速度
 const qualityLevelsHandle = (row, index) => {
-  Hls.currentLevel = index
-  state.currentLevel = index
+  Hls.currentLevel = index;
+  state.currentLevel = index;
 };
 // 播放速度
 const playbackRate = (row) => {
@@ -497,9 +608,11 @@ const toggleFullScreenHandle = () => {
 };
 
 const init = (): void => {
-
-  if (state.dVideo.canPlayType(props.type) || state.dVideo.canPlayType('application/vnd.apple.mpegurl')) {
-    state.muted = props.autoPlay
+  if (
+    state.dVideo.canPlayType(props.type) ||
+    state.dVideo.canPlayType("application/vnd.apple.mpegurl")
+  ) {
+    state.muted = props.autoPlay;
     // state.dVideo.load();
   }
   // // 使用hls解码
@@ -511,42 +624,195 @@ const init = (): void => {
     Hls.attachMedia(state.dVideo);
     Hls3.attachMedia(state.Vvideo);
     Hls.on(Hls2.Events.MEDIA_ATTACHED, () => {
-      Hls.loadSource('http://localhost:3007/mergedUploadFile/ea4b9032c51563d78fe7fcd435cbcdf1/chunk/index.m3u8');
+      console.log("props.movieUrl", props.movieUrl);
+      Hls.loadSource(props.movieUrl);
       // 加载可用质量级别
-      Hls.on('hlsManifestParsed', (ev, data) => {
+      Hls.on("hlsManifestParsed", (ev, data) => {
         // console.log(data)
-        state.currentLevel = data.level
-        state.qualityLevels = data.levels || []
+        state.currentLevel = data.level;
+        state.qualityLevels = data.levels || [];
         // state.dVideo.load();
       });
-    })
+    });
 
     Hls3.on(Hls2.Events.MEDIA_ATTACHED, () => {
-      // Hls3.loadSource('http://localhost:3007/mergedUploadFile/ea4b9032c51563d78fe7fcd435cbcdf1/chunk/index.m3u8');
-    })
+      Hls3.loadSource(props.movieUrl);
+    });
 
-    Hls.on('hlsLevelSwitching', (ev, data) => {
+    Hls.on("hlsLevelSwitching", (ev, data) => {
       // state.dVideo.load();
     });
-    Hls.on('hlsLevelSwitched', (ev, data) => {
-      state.currentLevel = data.level
+    Hls.on("hlsLevelSwitched", (ev, data) => {
+      state.currentLevel = data.level;
     });
+  }
+};
+
+let barrageArray: {
+  url: string;
+  text: string;
+  level: number;
+}[] = [
+  
+];
+let barrageColorArray: string[] = [
+  "#0099CC",
+  "#333333",
+  "#009966",
+  "#FFFF66",
+  "#9933FF",
+  "#FFFF99",
+  "#CCCCFF",
+  "#CC9933",
+  "#FFFF66",
+];
+const barrageTipWidth: number = 50; //提示语的长度
+
+let barrageBoxWrap: Element,
+  barrageBox: Element,
+  barrageWidth: number,
+  barrageHeight: number;
+let que = new queue();
+let renderTimer: NodeJS.Timeout | null;
+
+//保证顺序
+function render(isSendMsg: boolean): void {
+  if (que.length > 0) {
+    // console.log(que.length );
+    setTimeout(() => {
+      let item: string = que.front() as string;
+      que.pop();
+      createBarrage(item, isSendMsg);
+      render(isSendMsg);
+    }, 2000);
   }
 }
 
-watch(() => props.src, () => {
-  //nextTick DOM更新后调用
-  nextTick(() => {
-    // 初始化 
-    init();
-    preloadVideoThumbs();
-  })
-}, { immediate: true })
+//创建弹幕
+function createBarrage(msg: string, isSendMsg: boolean): void {
+  let divNode: HTMLDivElement = document.createElement("div");
+  let spanNode: HTMLSpanElement = document.createElement("span");
+
+  divNode.innerHTML = msg;
+  divNode.classList.add("barrage-item");
+  barrageBox.appendChild(divNode);
+
+  spanNode.innerHTML = "举报";
+  spanNode.classList.add("barrage-tip");
+  divNode.appendChild(spanNode);
+
+  let barrageOffsetLeft: number = barrageWidth;
+  // barrageOffsetLeft = isSendMsg ? barrageWidth : barrageOffsetLeft;
+  let barrageOffsetTop: number = getRandom(10, barrageHeight - 10);
+  let barrageColor: string =
+    barrageColorArray[Math.floor(Math.random() * barrageColorArray.length)];
+
+  //执行初始化滚动
+  initBarrage.call(divNode, {
+    left: barrageOffsetLeft,
+    top: barrageOffsetTop,
+    color: barrageColor,
+  });
+}
+
+//初始化弹幕移动(速度，延迟)
+function initBarrage(obj: { left: number; top: number; color: string }): void {
+  //初始化
+  obj.top = obj.top || 0;
+  // obj.class = obj.color || '#fff';
+  this.style.left = obj.left + "px";
+  this.style.top = obj.top + "px";
+  this.style.color = obj.color;
+
+  //添加属性
+  this.distance = 0;
+  this.width = ~~window.getComputedStyle(this).width.replace("px", "");
+  // this.offsetLeft = obj.left;
+  this.timer = null;
+
+  //弹幕子节点
+  let barrageChileNode = this.children[0];
+  barrageChileNode.style.left = (this.width - barrageTipWidth) / 2 + "px";
+
+  //运动
+  barrageAnimate(this);
+
+  //停止
+  this.onmouseenter = function () {
+    barrageChileNode.style.display = "block";
+    cancelAnimationFrame(this.timer);
+  };
+
+  this.onmouseleave = function () {
+    barrageChileNode.style.display = "none";
+    barrageAnimate(this);
+  };
+
+  //举报
+  barrageChileNode.onclick = function () {
+    alert("举报成功");
+  };
+}
+
+//弹幕动画
+function barrageAnimate(obj) {
+  move(obj);
+
+  if (Math.abs(obj.distance) < obj.width + obj.offsetLeft) {
+    obj.timer = requestAnimationFrame(function () {
+      barrageAnimate(obj);
+    });
+  } else {
+    cancelAnimationFrame(obj.timer);
+    //删除节点
+    obj.parentNode.removeChild(obj);
+  }
+}
+
+//移动
+function move(obj) {
+  obj.distance--;
+  obj.style.transform = "translateX(" + obj.distance + "px)";
+  obj.style.webkitTransform = "translateX(" + obj.distance + "px)";
+}
+
+//随机获取高度
+function getRandom(start: number, end: number): number {
+  return start + Math.random() * (end - start);
+}
+
+watch(
+  () => props.movieUrl,
+  () => {
+    //nextTick DOM更新后调用
+    nextTick(() => {
+      // 初始化
+      init();
+      preloadVideoThumbs();
+
+      barrageBoxWrap = document.querySelector(".video_play") as Element;
+      barrageBox = document.querySelector(".barrage-container") as Element;
+      // console.log(barrageBox);
+      //容器的宽高度
+      barrageWidth = ~~window
+        .getComputedStyle(barrageBoxWrap as Element)
+        ["width"].replace("px", "");
+      barrageHeight = ~~window
+        .getComputedStyle(barrageBoxWrap as Element)
+        ["height"].replace("px", "");
+
+      barrageArray.forEach(function (item) {
+        que.push(item.text); //放进队列
+      });
+      render(false);
+    });
+  },
+  { immediate: true }
+);
 onMounted(() => {
   state.dVideo = refdVideo;
   state.Vvideo = Vvideo;
   inputFocusHandle();
-
 });
 defineExpose({
   play: playHandle, //播放
@@ -555,12 +821,13 @@ defineExpose({
 });
 </script>
 
-
 <style lang="less" scoped>
 @import "../style/reset.less";
 @import "../style/transition.less";
 @import "../style/animate.less";
 @import "../style/base.less";
+@import "../style/vPlayer.less";
+
 
 .d-player-wrap {
   --primary-color: v-bind(hexToRgbaColor);
@@ -573,5 +840,50 @@ defineExpose({
   height: 12rem;
 }
 
-@import "../style/vPlayer.less";
+
+.pop_up {
+  //   margin-top: 2rem;
+  width: 80rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4rem;
+
+  .pop_up_span {
+    font-size: 1.3rem;
+    color: rgb(136, 136, 136);
+    letter-spacing: 0.2rem;
+  }
+
+  .send_wrap {
+    display: flex;
+
+    .input {
+      width: 30rem;
+      height: 3.8rem;
+      outline: none;
+      border-radius: 0.5rem 0 0 0.5rem;
+      padding: 0;
+      padding-left: 1rem;
+      background-color: rgba(194, 194, 194, 0.4);
+    }
+
+    .send_btn {
+      height: 3.8rem;
+      width: 6rem;
+      text-align: center;
+      color: #ffffff;
+      font-size: 1.5rem;
+      background-color: #00aeec;
+      border-radius: 0 0.5rem 0.5rem 0;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
 </style>

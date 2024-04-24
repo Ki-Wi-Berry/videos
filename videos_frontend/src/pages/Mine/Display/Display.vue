@@ -5,7 +5,8 @@
     </div>
     <div class="form-item">手机号：{{ ruleForm.phoneNumber }}</div>
     <div class="form-item">用户昵称：{{ ruleForm.userName }}</div>
-    <div class="form-item">年龄：{{ ruleForm.userAge || "-" }}</div>
+    <div class="form-item">简介：{{ ruleForm?.description || "-" }}</div>
+    <div class="form-item">年龄：{{ ruleForm?.userAge || "-" }}</div>
     <div class="form-item">
       头像：
       <img
