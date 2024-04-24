@@ -54,6 +54,14 @@ export function GetUserInfoFromToken(req){
   
 }
 
-
+// 让特定表中特定数据特定变量的值为特定值
+export async function addSome(table, field,resultValue,id, idValue){
+    const sql = `UPDATE ${table} SET ${field} = ${resultValue} WHERE ${id} = ${idValue}`;
+    const [result] = await db.query(sql)
+    if(result.affectedRows !== 1){
+        return false
+    }
+    return true
+}
 
 

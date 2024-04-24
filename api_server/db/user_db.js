@@ -31,8 +31,8 @@ async function initTable() {
   await addColumnIfNotExists("users", "userAge", "VARCHAR(255)");
   await addColumnIfNotExists("users", "userImgUrl", "VARCHAR(255)");
   await addColumnIfNotExists("users", "description", "VARCHAR(255)");
-  await addColumnIfNotExists("users", "followNumber", "VARCHAR(255)");
-  await addColumnIfNotExists("users", "fanNumber", "VARCHAR(255)");
+  await addColumnIfNotExists("users", "followNumber", "INT");
+  await addColumnIfNotExists("users", "fanNumber", "INT");
 
 
 
@@ -54,11 +54,24 @@ async function initTable() {
   await addColumnIfNotExists("movies", "movieName", "VARCHAR(255)");
   await addColumnIfNotExists("movies", "imgUrl", "VARCHAR(255)");
   await addColumnIfNotExists("movies", "movieUrl", "VARCHAR(255)");
-  await addColumnIfNotExists("movies", "viewNumber", "VARCHAR(255)");
-  await addColumnIfNotExists("movies", "likesNumber", "VARCHAR(255)");
+  await addColumnIfNotExists("movies", "viewNumber", "INT");
+  await addColumnIfNotExists("movies", "likesNumber", "INT");
   await addColumnIfNotExists("movies", "author", "VARCHAR(255)");
+  await addColumnIfNotExists("movies", "updateTime", "INT");
+  await addColumnIfNotExists("movies", "barrageNumber", "INT");
 
-  
+  const createMovieBarragesTable = `CREATE TABLE IF NOT EXISTS barrages (
+    barrageId INT AUTO_INCREMENT PRIMARY KEY,
+    movieId INT NOT NULL,
+    FOREIGN KEY (movieId) REFERENCES movies(movieId)
+  )`;
+
+  const [createMovieBarragesTableResult] = await db.query(createMovieBarragesTable);
+
+
+  await addColumnIfNotExists("barrages", "movieTime", "INT");
+  await addColumnIfNotExists("barrages", "content", "VARCHAR(255)");
+
 
 }
 

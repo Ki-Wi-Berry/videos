@@ -133,6 +133,11 @@ export async function confirmUpload(req, res) {
       message: "登陆状态过期",
     });
   }
+
+  const date = new Date();
+
+  const updateTime = Date.parse(date)/1000;
+
   const userId = userInfo.userId;
   const author = userInfo.userName;
   //   console.log(userId)
@@ -140,7 +145,7 @@ export async function confirmUpload(req, res) {
   //   console.log(movieUrl,imgUrl,movieName,id)
   const insertSql = "insert into movies set ?";
 
-  const insertStr = { movieUrl, imgUrl, movieName, userId, author,viewNumber:0,likesNumber:0 };
+  const insertStr = { movieUrl, imgUrl, movieName, userId, author,updateTime,viewNumber:0,likesNumber:0,barrageNumber:0 };
 
   const [insertStrResult] = await db.query(insertSql, insertStr);
   // console.log(insertStrResult.affectedRows);

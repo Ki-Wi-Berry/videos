@@ -7,9 +7,25 @@ import {
   initUpload,
   uploadPart,
   finishUpload,
-  confirmUpload
+  confirmUpload,
 } from "../router_handle/UploadCtrl.js";
-import { getUserInfoDetail,changeUserInfoDetail,getUserMovies,getHeaderUserInfo } from "../router_handle/userInfoCtrl.js";
+import {
+  getUserInfoDetail,
+  changeUserInfoDetail,
+  getUserMovies,
+  getHeaderUserInfo,
+} from "../router_handle/userInfoCtrl.js";
+import {
+  getMoviePageHeaderInfo,
+  getMovieInfo,
+  addBarrage,
+  getBarrage,
+  addMovieViews,
+} from "../router_handle/MovieInfoCtrl.js";
+import {
+  getSearchMovieList,
+  getHomeMovieList,
+} from "../router_handle/HomeSearchCtrl.js";
 
 const router = new express.Router();
 const upload = multer();
@@ -91,5 +107,26 @@ router.get("/getUserMovies", getUserMovies);
 
 // 获取顶栏用户信息
 router.get("/getHeaderUserInfo", getHeaderUserInfo);
+
+// 获取视频播放页面顶栏信息
+router.get("/getMoviePageHeaderInfo", getMoviePageHeaderInfo);
+
+// 获取视频资源
+router.get("/getMovieInfo", getMovieInfo);
+
+// 添加弹幕
+router.post("/addBarrage", addBarrage);
+
+// 获取弹幕
+router.get("/getBarrage", getBarrage);
+
+// 增加视频阅览量
+router.post("/addMovieViews", addMovieViews);
+
+// 获取搜索页视频数据
+router.get("/getSearchMovieList", getSearchMovieList);
+
+// 获取首页视频数据
+router.get("/getHomeMovieList", getHomeMovieList);
 
 export default router;

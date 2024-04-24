@@ -2,7 +2,7 @@ import db from "../db/user_db.js";
 import { GetUserInfoFromToken } from "../utils/hook.js";
 
 // 获取个人全部信息
-async function getAllUserInfo(userId) {
+export async function getAllUserInfo(userId) {
   const searchSql = `SELECT * FROM users WHERE userId = ${userId}`;
   const [searchResult] = await db.query(searchSql);
   return searchResult[0];
@@ -17,11 +17,11 @@ export async function getUserInfoDetail(req, res) {
       message: "登陆状态过期",
     });
   }
-  const { userId, userName, phoneNumber, userAge, userImgUrl } =
+  const { userId, userName, phoneNumber, userAge, userImgUrl,description } =
     await getAllUserInfo(userInfo.userId);
   res.send({
     status: 200,
-    data: { userId, userName, phoneNumber, userAge, userImgUrl },
+    data: { userId, userName, phoneNumber, userAge, userImgUrl,description },
   });
 }
 
