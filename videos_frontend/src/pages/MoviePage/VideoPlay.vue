@@ -33,7 +33,7 @@ import { useRoute } from "vue-router";
 import { ElMessage } from "element-plus";
 import { videoPlay } from "./VideoPlayer/index.ts";
 import { getMovieInfo, addBarrage, getBarrage,addMovieViews } from "../../api/request.js";
-import { queue, NODE } from "../../utils/queue"; //队列轮子
+import { Queue, Node } from "../../utils/queue"; //队列轮子
 import syncControl from "../../utils/syncControl.js";
 
 const options: {
@@ -93,7 +93,7 @@ let barrageBoxWrap: Element,
   barrageBox: Element,
   barrageWidth: number,
   barrageHeight: number;
-let barrageQueue = new queue();
+let barrageQueue = new Queue();
 
 const data: { inputValue: string } = reactive({
   inputValue: "",

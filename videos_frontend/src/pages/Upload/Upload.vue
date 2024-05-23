@@ -263,10 +263,17 @@ const beforeImgUpload: UploadProps["onChange"] = async (uploadFile) => {
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async (valid, fields) => {
     if (valid) {
       console.log("submit!", ruleForm.value);
-      confirmUpload(ruleForm.value);
+      await confirmUpload(ruleForm.value);
+      ElMessage({
+        message: "保存成功",
+        type: "success",
+      });
+      setTimeout(()=>{
+        // location.reload();
+      },1000)
     } else {
       console.log("error submit!", fields);
     }

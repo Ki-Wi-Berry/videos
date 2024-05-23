@@ -8,7 +8,7 @@ export const useStore = defineStore  ('main',{
      */
     state:():object=>{
         return {
-            islogin:0,//是否登录
+            isLogin:0,//是否登录
         }
     },
     /***
@@ -26,13 +26,13 @@ export const useStore = defineStore  ('main',{
         //aciton中不能使用箭头函数，因为箭头函数绑定外部的 this
         loginIn():void{
             this.$patch(state =>{
-                state.islogin=1;
+                state.isLogin=1;
             })
         },
         loginOut():void{
             this.$patch(state =>{
                 console.log('loginOut');
-                state.islogin=0;
+                state.isLogin=0;
                 localStorage.removeItem('token');
                 location.reload();
             })

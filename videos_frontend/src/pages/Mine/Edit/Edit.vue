@@ -5,7 +5,7 @@
         >取消</el-button
       >
       <el-button type="primary" size="large" @click="submitForm(ruleFormRef)"
-        >确认修改</el-button
+        >保存</el-button
       >
     </div>
     <ElForm

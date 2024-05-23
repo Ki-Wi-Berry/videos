@@ -27,6 +27,7 @@
 </template>
 
 <script setup lang="ts">
+import { ElMessage } from "element-plus";
 import { HeadLine } from "../../components";
 import Display from "./Display/Display.vue";
 import Edit from "./Edit/Edit.vue";
@@ -60,6 +61,11 @@ const userInfoChange = (userInfo: RuleForm) => {
   // readOnly.value = status;
   console.log(userInfo);
   changeUserInfoDetail(userInfo);
+  ElMessage({
+    message: "保存成功",
+    type: "success",
+  });
+  location.reload();
 };
 
 onMounted(async () => {
@@ -76,9 +82,9 @@ onMounted(async () => {
 </script>
 
 <style lang="less" scoped>
-.video-box{
+.video-box {
   display: flex;
   flex-wrap: wrap;
-  gap:10px;
+  gap: 10px;
 }
 </style>

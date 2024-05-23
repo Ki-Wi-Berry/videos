@@ -280,7 +280,7 @@ import {
   isMobile,
   firstUpperCase,
 } from "../utils/util";
-import { queue } from "../../../../utils/queue"; //队列轮子
+import { Queue } from "../../../../utils/queue"; //队列轮子
 import { videoEmits, videoProps } from "./plugins/index";
 const props = defineProps({
   movieUrl: String,
@@ -619,14 +619,13 @@ const init = (): void => {
   else if (Hls2.isSupported()) {
     Hls = new Hls2({ fragLoadingTimeOut: 2000 });
     const Hls3 = new Hls2({ fragLoadingTimeOut: 2000 });
-    Hls.detachMedia(); //解除绑定
+    Hls.detachMedia();
     Hls3.detachMedia();
     Hls.attachMedia(state.dVideo);
     Hls3.attachMedia(state.Vvideo);
     Hls.on(Hls2.Events.MEDIA_ATTACHED, () => {
       console.log("props.movieUrl", props.movieUrl);
       Hls.loadSource(props.movieUrl);
-      // 加载可用质量级别
       Hls.on("hlsManifestParsed", (ev, data) => {
         // console.log(data)
         state.currentLevel = data.level;
@@ -672,7 +671,7 @@ let barrageBoxWrap: Element,
   barrageBox: Element,
   barrageWidth: number,
   barrageHeight: number;
-let que = new queue();
+let que = new Queue();
 let renderTimer: NodeJS.Timeout | null;
 
 //保证顺序

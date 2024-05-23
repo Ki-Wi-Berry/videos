@@ -1,5 +1,6 @@
 <template>
   <!-- 导航栏 -->
+  <HeadLine/>
   <div class="login_in_page">
     <div class="login_in_title">
       <span>登录</span>
@@ -11,6 +12,7 @@
 
 <script setup name="LoginIn">
 //导航栏
+import {HeadLine} from "../../components";
 import LoginForm from "./LoginForm.vue";
 import { useStore } from "../../store";
 import { storeToRefs } from "pinia";

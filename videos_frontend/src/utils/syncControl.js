@@ -1,17 +1,18 @@
+
 class syncControl {
   constructor(max) {
-    this.queue = [];
+    this.queryArray = [];
     this.count = 0;
   }
-  async run(fn) {
+  async run(callback) {
     if(this.count >= 1) {
       await new Promise((resolve) => this.queue.push(resolve));
     }
     this.count++;
-    let res = await fn();
+    let result = await callback();
     this.count--;
-    this.queue.length && this.queue.shift()();
-    return res;
+    this.queryArray.length && this.queryArray.shift()();
+    return result;
   }
 }
 

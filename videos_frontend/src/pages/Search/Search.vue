@@ -1,6 +1,6 @@
 <template>
   <head-line></head-line>
-  <Panel title="视频搜索结果">
+  <Panel :title='`包含 ${searchContent} 的视频资源`'>
     <div class="video-box">
       <template v-for="item in movieLists" :key="item.id">
         <VideoCell :movieData="item" />
@@ -19,10 +19,12 @@ const route = useRoute();
 
 const movieLists = ref([]);
 
+const searchContent = ref(route?.query?.content || "");
+
 onMounted(async () => {
   // console.log(route?.query?.content)
   const { movieList } = await getSearchMovieList({
-    searchContent: route?.query?.content || "",
+    searchContent: searchContent.value
   });
   //   console.log(movieList);
   movieLists.value = movieList;

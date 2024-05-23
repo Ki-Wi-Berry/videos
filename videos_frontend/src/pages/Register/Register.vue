@@ -1,5 +1,6 @@
 <template>
   <!-- 导航栏 -->
+  <HeadLine/>
   <div class="login_in_page">
     <div class="login_in_title">
       <span>注册</span>
@@ -11,6 +12,8 @@
 
 <script setup name="Register">
 //导航栏
+import {HeadLine} from "../../components";
+
 import RegisterForm from "./RegisterForm.vue";
 import { useStore } from "../../store";
 const store = useStore();

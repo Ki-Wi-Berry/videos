@@ -6,10 +6,10 @@
     >
       <li
         class="top_navigation_bar_li"
-        v-for="(item, index) in data.top_navigation_bar_left"
+        v-for="(item, index) in data.topNavigationBarLeft"
         :key="item"
       >
-        <router-link :to="data.top_navigation_bar_href_left[index]">{{
+        <router-link :to="data.topNavigationBarHrefLeft[index]">{{
           item
         }}</router-link>
       </li>
@@ -27,7 +27,7 @@
               @blur="hide_browsing_history1"
               @focus="show_browsing_history1"
               v-model="data.inputValue"
-              @keyup.enter="add"
+              @keyup.enter="searchMovie "
               type="text"
               placeholder="请输入"
               :style="{
@@ -77,7 +77,7 @@
       >
         <div class="top_navigation_bar_login_box">
           <router-link
-            v-if="store.islogin"
+            v-if="store.isLogin"
             to="/mine"
             :class="{
               top_navigation_bar_login: true,
@@ -149,10 +149,10 @@
       </li>
       <li
         class="top_navigation_bar_li"
-        v-for="(item, index) in data.top_navigation_bar_right"
+        v-for="(item, index) in data.topNavigationBarRight "
         :key="item"
       >
-        <router-link :to="data.top_navigation_bar_herf_right[index]">{{
+        <router-link :to="data.topNavigationBarHrefRight [index]">{{
           item
         }}</router-link>
       </li>
@@ -198,7 +198,7 @@ const data = reactive({
   //头部导航栏
   inputValue: "",
   home_top_navigation_list: ["海贼王", "元龙", "狐妖小红娘"],
-  top_navigation_bar_left: [
+  topNavigationBarLeft: [
     "首页",
     "首页",
     "首页",
@@ -208,9 +208,9 @@ const data = reactive({
     "首页",
     "首页",
   ],
-  top_navigation_bar_right: ["首页", "首页", "首页", "首页", "首页", "首页"],
-  top_navigation_bar_href_left: ["/", "/", "/", "/", "/", "/", "/", "/"],
-  top_navigation_bar_herf_right: ["/", "/", "/", "/", "/", "/"],
+  topNavigationBarRight : ["首页", "首页", "首页", "首页", "首页", "首页"],
+  topNavigationBarHrefLeft: ["/", "/", "/", "/", "/", "/", "/", "/"],
+  topNavigationBarHrefRight : ["/", "/", "/", "/", "/", "/"],
   browsing_history_show_or_not1: 0,
   top_navigation_bar_login_status: [
     {
@@ -254,7 +254,7 @@ onMounted(async () => {
 });
 
 // 跳转到搜索页面
-const add = function (): void {
+const searchMovie  = function (): void {
   // data.home_top_navigation_list.push(data.inputValue);
   router.push({
     name: "search",
@@ -292,7 +292,7 @@ let show_drop_time, hide_drop_time, hide_drop_time_plus;
 
 // 显示登录下拉菜单
 const show_login_box_animation = async function (): Promise<void> {
-  if (store.islogin) {
+  if (store.isLogin) {
     clearTimeout(hide_drop_time);
     clearTimeout(hide_drop_time_plus);
     show_drop_time = await setTimeout(() => {
@@ -304,7 +304,7 @@ const show_login_box_animation = async function (): Promise<void> {
 
 // 隐藏登录下拉菜单
 const hide_login_box_drop = async function (): Promise<void> {
-  if (store.islogin) {
+  if (store.isLogin) {
     clearTimeout(show_drop_time);
     hide_drop_time = await setTimeout(() => {
       data.login_box_animation = 0;
