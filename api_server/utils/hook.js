@@ -51,7 +51,6 @@ export function GetUserInfoFromToken(req){
   } catch{
     return false
   }
-  
 }
 
 // 让特定表中特定数据特定变量的值为特定值
